@@ -2,26 +2,203 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+@font-face {
+  font-family: "UncutSans";
+  src: local("UncutSans"), url("/fonts/UncutSans.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: block;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+@font-face {
+  font-family: "Inter";
+  src: local("Inter"), url("/fonts/Inter.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: block;
+}
+
+@layer components {
+  .navList {
+    @apply flex items-center gap-3;
+  }
+  .navList li a {
+    @apply font-inter font-medium text-sm px-3.5 py-2 transition-all duration-300 tracking-[0.01em] hover:text-white relative;
+  }
+
+  button.field {
+    @apply border-white/[0.20] bg-white/5 hover:bg-white/[0.075] transition-all tracking-[-0.01em] duration-200 px-3 py-[9px] border rounded-m text-[14px] font-[600] flex items-center justify-center gap-1.5;
+  }
+  input.field {
+    /* @apply focus:outline-none px-3 py-2 border border-[#40444e] bg-[#16181f] rounded-m; */
+    @apply focus:outline-none px-3 py-2 border border-white/[0.20] autofill:bg-white/5 autofill:appearance-none bg-white/5 rounded-m;
+  }
+  label.field {
+    @apply text-gray-300 text-sm;
+  }
+
+  .fixHeight {
+    @apply h-[calc(100vh-70.5px)];
+  }
+
+  .dashboardParent {
+    @apply bg-[rgb(10,11,18)] relative z-10;
+  }
+  .dashboardGrid {
+    @apply grid grid-cols-[340px_1fr];
+  }
+  .dashboardWrap {
+    @apply py-2.5 pr-2.5 h-screen;
+  }
+  .dashboardBody {
+    @apply z-10 shadow-lg h-full overflow-y-scroll rounded-3xl bg-[rgb(4,4,10)] border border-white/10;
+  }
+
+  .bgTealGradient {
+    background: linear-gradient(180deg, #244ec12a, #96ccb500);
+  }
+
+  .bgDashboardNav {
+    background: radial-gradient(circle at 100% 0, #06081b, transparent -5%),
+      radial-gradient(circle at -150%, #1f6affc9, transparent 90%);
+  }
+
+  .borderLinearBg {
+    background: linear-gradient(
+      to bottom,
+      #ffffff00 0%,
+      #ffffff20 15%,
+      #ffffff20 85%,
+      #ffffff00 100%
+    );
+  }
+
+  .mdP {
+    @apply opacity-[0.85] tracking-sm;
+  }
+
+  .flexc {
+    @apply flex items-center;
+  }
+
+  .flexcc {
+    @apply flex flex-col items-center;
+  }
+
+  .maskLinear {
+    mask-image: linear-gradient(
+      to right,
+      rgba(0, 0, 0, 0) 0%,
+      rgba(0, 0, 0, 0.122) 15%,
+      rgb(0, 0, 0) 70%,
+      rgb(0, 0, 0, 0.5) 100%
+    );
+  }
+
+  .maskLinearRight {
+    mask-image: linear-gradient(
+      to left,
+      rgba(0, 0, 0, 0) 0%,
+      rgba(0, 0, 0) 40%
+    );
+  }
+
+  .dashboardView {
+    @apply p-12 max-w-6xl mx-auto w-full;
+  }
+
+  .codeContainer code {
+    @apply text-[13px];
+  }
+
+  .codeReference code {
+    @apply text-[15px] font-semibold text-blue-300;
+  }
+
+  .codeReference code span {
+    @apply text-[13px] font-normal text-white;
+  }
+
+  .codeReference p {
+    @apply text-[15px] border-b border-white/10 pb-5 mb-5 flex items-end gap-2;
+  }
+  .codeReference p .required {
+    @apply px-2 w-fit text-[13px] shadow-ins shadow-orange-300/10 text-orange-300 py-1 border border-orange-300/10 rounded-m;
+  }
+  .codeReference p .optional {
+    @apply px-2 w-fit text-[13px] shadow-ins shadow-blue-300/10 text-blue-300 py-1 border border-blue-300/10 rounded-m;
+  }
+
+  .grayButton {
+    @apply text-[14px] rounded-m border border-white/10 bg-white/5 flexc gap-1.5 relative overflow-hidden;
+  }
+  .grayButton span {
+    @apply absolute inset-0 bg-gradient-to-t opacity-0 transition-all duration-300 from-white/10 via-white/5 to-white/[0.02];
+  }
+  button.md {
+    @apply px-5 py-[7px];
+  }
+  button.sm {
+    @apply px-3.5 py-2 shadow-ins2;
+  }
+  button.xs,
+  a.xs {
+    @apply px-3.5 py-1.5 shadow-ins2;
   }
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  background: rgb(0, 0, 0);
+  font-family: "Inter";
 }
+
+tr {
+  @apply grid grid-cols-[1fr_1.75fr_1fr_1fr] items-center;
+}
+th {
+  @apply text-start font-[450] text-[13px];
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+a,
+button,
+li {
+  @apply font-inter;
+}
+
+h5 {
+  @apply text-[23px] font-uncut font-semibold tracking-[-0.035em];
+}
+
+h4 {
+  @apply text-xl font-semibold tracking-tighter;
+}
+
+h3 {
+  @apply text-[32px] font-uncut font-[630] tracking-[-0.035em];
+}
+
+.recharts-area {
+  @apply scale-x-[1.095] origin-center;
+}
+
+.recharts-tooltip-cursor {
+  @apply scale-x-[1.095] origin-center;
+}
+
+.recharts-active-dot {
+  @apply scale-x-[1.095] origin-center;
+}
+
+.tremor-BarList-bar > div:first-child {
+  @apply px-0.5;
+}
+/* .tremor-BarList-bar {
+  @apply bg-[rgb(34,45,70)];
+} */
