@@ -204,11 +204,10 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const categoryData = await conn.execute(
     `select * from categories where uid = '${session.user.id}' and id  = '${query.categoryId}'`
   );
-  const categoryEvents = await conn.execute(
-    `SELECT * FROM events WHERE ed >= DATE_SUB(CURDATE(), INTERVAL 7 DAY) AND ed <= CURDATE() and ec = ${query.categoryId}`
-  );
 
-  // const { data } = await supabase.from("users").select("*");
+  const categoryEvents = await conn.execute(
+    `SELECT * FROM events WHERE ed >= DATE_SUB(CURDATE(), INTERVAL 7 DAY) AND ed <= CURDATE() and ec = ${query.categoryId} and uid = '${session.user.id}'`
+  );
 
   return {
     props: {

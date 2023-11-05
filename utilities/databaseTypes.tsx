@@ -12,3 +12,13 @@ export interface Category {
   ic: number;
   t: number;
 }
+
+export interface Event {
+  eid: number;
+  uid: string;
+  en: string;
+  edes: string | null;
+  et: Record<string, any> | null;
+  ec: number;
+  ed: string;
+}

@@ -37,7 +37,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
               userId,
               req.body.title,
               req.body.description ?? null,
-              req.body.tags,
+              JSON.stringify(req.body.tags),
               req.body.category_id,
               formattedDateForSQL(new Date()),
             ]

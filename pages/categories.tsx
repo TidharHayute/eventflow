@@ -9,6 +9,7 @@ import {
   BanknotesIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
+  ClipboardDocumentIcon,
   ExclamationTriangleIcon,
   LifebuoyIcon,
   MagnifyingGlassIcon,
@@ -96,7 +97,6 @@ export default function Categories({
   categoriesData: Category[];
   lastEvents: { en: string; ec: number; last24: number }[];
 }) {
-  console.log(lastEvents);
   const [openCreateCategory, setOpenCreateCategory] = useState(false);
   const [openCategoryIcon, setOpenCategoryIcon] = useState(false);
   const [newCategory, setNewCategory] = useState({ name: "", icon: 6 });
@@ -123,7 +123,6 @@ export default function Categories({
           `SELECT id FROM categories WHERE uid = '${user.id}' AND n = '${newCategory.name}' LIMIT 1`
         )
       ).rows[0];
-      console.log(newCategoryId);
 
       setCategoriesList([
         ...categoriesList,
@@ -174,7 +173,7 @@ export default function Categories({
                       <tr
                         onClick={() => Router.push(`/category/${it.id}`)}
                         key={i}
-                        className="p-3.5 group border-b group border-white/10 transition-all duration-200 hover:bg-white/5 cursor-pointer"
+                        className="p-3.5 group border-b group border-white/10 transition-all duration-[280ms] hover:bg-white/5 cursor-pointer"
                       >
                         <td className="flexc gap-3.5">
                           <div className="w-10 h-10 rounded-xl border border-white/10 flexc justify-center shadow-[inset_0px_-3px_8px_0.5px_rgba(255,255,255,0.15)]">
@@ -192,8 +191,9 @@ export default function Categories({
                             }}
                           >
                             {it.n}
-                            <p className="transition-all duration-200 opacity-0 text-xs h-0 group-hover:h-4 group-hover:opacity-60">
-                              ID — {it.id}
+                            <p className="transition-all duration-[280ms] opacity-0 text-xs h-0 group-hover:h-4 group-hover:opacity-60 flexc gap-1.5">
+                              Category ID — {it.id}
+                              <ClipboardDocumentIcon className="w-3.5 -translate-y-[0.5px]" />
                             </p>
                           </div>
                         </td>
@@ -456,12 +456,6 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 
   let lastEventData;
   if (categoriesData.rows.length > 0) {
-    // lastEventData = await conn.execute(
-    //   `select ec, en from events where ec in  and (ec, ed) in (select ec, max(ed) as max_ed from events where ec in (${categoriesData.rows
-    //     .map((obj: any) => obj.id)
-    //     .join(", ")}) group by ec) order by ec;`
-    // );
-
     lastEventData = await conn.execute(`
     SELECT e1.ec, e1.en, COUNT(e2.ec) AS last24
     FROM events e1

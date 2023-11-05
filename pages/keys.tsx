@@ -407,7 +407,7 @@ export default function Keys({
                     <span className="optional">optional</span>
                   </p>
                   <code>
-                    tags<span> {`{ string: any }`}</span>
+                    tags<span> {`{ string: any `}</span>
                   </code>
                   <p>
                     Relevant tags for the new event, for more advanced data and
