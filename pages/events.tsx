@@ -78,8 +78,6 @@ export default function LatestEvents({
     }
   });
 
-  console.log(uniqueKeyTags);
-
   let eventsListFilter = eventsList
     .map((e) => ({ ...e, ed: new Date(e.ed) }))
     .sort((a, b) => b.ed.getTime() - a.ed.getTime())
@@ -116,7 +114,7 @@ export default function LatestEvents({
         <Sidebar uI={user} current="Latest Events" />
 
         <div className="dashboardWrap">
-          <div className="dashboardBody ">
+          <div className="dashboardBody">
             <DashboardHeader />
 
             <div className="dashboardView">
@@ -158,37 +156,48 @@ export default function LatestEvents({
                       }}
                     >
                       <div className="-m-px">
-                        {categoriesData.map((c, i) => (
-                          <button
-                            key={i}
-                            onClick={() => {
-                              if (categoriesFilter.includes(c.id)) {
-                                setCategoriesFilter(
-                                  categoriesFilter.filter((id) => id !== c.id)
-                                );
-                              } else {
-                                setCategoriesFilter([
-                                  ...categoriesFilter,
-                                  c.id,
-                                ]);
-                              }
-                            }}
-                            className="flexc w-44 relative truncate gap-2 px-2.5 py-[7px] rounded-lg hover:bg-white/5 text-sm"
-                          >
-                            {IconLibrary[
-                              categoriesData.find((ca) => ca.id == c.id)!.ic
-                            ].i("w-4")}
+                        <div className="max-h-[250px] overflow-y-scroll">
+                          {categoriesData.length > 0 ? (
+                            categoriesData.map((c, i) => (
+                              <button
+                                key={i}
+                                onClick={() => {
+                                  if (categoriesFilter.includes(c.id)) {
+                                    setCategoriesFilter(
+                                      categoriesFilter.filter(
+                                        (id) => id !== c.id
+                                      )
+                                    );
+                                  } else {
+                                    setCategoriesFilter([
+                                      ...categoriesFilter,
+                                      c.id,
+                                    ]);
+                                  }
+                                }}
+                                className="flexc w-52 relative truncate gap-2 px-2.5 py-[7px] rounded-lg hover:bg-white/5 text-sm"
+                              >
+                                {IconLibrary[
+                                  categoriesData.find((ca) => ca.id == c.id)!.ic
+                                ].i("min-w-[16px] max-w-[16px]")}
 
-                            {c.n}
-                            <CheckCircleIcon
-                              className={`transition-all duration-200 w-3.5 absolute right-2 ${
-                                categoriesFilter.includes(c.id)
-                                  ? `opacity-100`
-                                  : `opacity-0`
-                              }`}
-                            />
-                          </button>
-                        ))}
+                                {c.n}
+                                <CheckCircleIcon
+                                  className={`transition-all duration-200 w-3.5 absolute right-2 ${
+                                    categoriesFilter.includes(c.id)
+                                      ? `opacity-100`
+                                      : `opacity-0`
+                                  }`}
+                                />
+                              </button>
+                            ))
+                          ) : (
+                            <div className="my-7 w-52 flexc justify-center gap-2 text-sm">
+                              <MagnifyingGlassIcon className="w-4 -ml-0.5" />
+                              No categories found.
+                            </div>
+                          )}
+                        </div>
 
                         <DropdownMenu.Separator />
                         <button
@@ -245,62 +254,69 @@ export default function LatestEvents({
                       }}
                     >
                       <div className="-m-px">
-                        <div className="max-h-[200px] overflow-y-scroll">
-                          {Object.entries(uniqueKeyTags).map(
-                            ([key, value], i) => (
-                              <div
-                                key={i}
-                                className="w-44 capitalize gap-1 pl-2.5 pr-1 py-[7px]"
-                              >
-                                <p className="text-sm font-medium"> {key}</p>
+                        <div className="max-h-[250px] overflow-y-scroll">
+                          {Object.entries(uniqueKeyTags).length > 0 ? (
+                            Object.entries(uniqueKeyTags).map(
+                              ([key, value], i) => (
+                                <div
+                                  key={i}
+                                  className="w-44 capitalize gap-1 pl-2.5 pr-1 py-[7px]"
+                                >
+                                  <p className="text-sm font-medium"> {key}</p>
 
-                                <div className="grid grid-cols-1 ml-2 mt-1">
-                                  {Array.isArray(value) &&
-                                    value.map((it: any, i: number) => (
-                                      <button
-                                        key={i}
-                                        onClick={() => {
-                                          const tagObject = { [key]: it };
+                                  <div className="grid grid-cols-1 ml-2 mt-1">
+                                    {Array.isArray(value) &&
+                                      value.map((it: any, i: number) => (
+                                        <button
+                                          key={i}
+                                          onClick={() => {
+                                            const tagObject = { [key]: it };
 
-                                          const isTagIncluded =
-                                            JSON.stringify(tagsFilter) ===
-                                            JSON.stringify({
-                                              ...tagsFilter,
-                                              ...tagObject,
-                                            });
+                                            const isTagIncluded =
+                                              JSON.stringify(tagsFilter) ===
+                                              JSON.stringify({
+                                                ...tagsFilter,
+                                                ...tagObject,
+                                              });
 
-                                          if (isTagIncluded) {
-                                            const updatedTagsFilter = {
-                                              ...tagsFilter,
-                                            };
-                                            delete updatedTagsFilter[key];
-                                            setTagsFilter(updatedTagsFilter);
-                                          } else {
-                                            setTagsFilter({
-                                              ...tagsFilter,
-                                              ...tagObject,
-                                            });
-                                          }
-                                        }}
-                                        className="text-start flexc px-2.5 py-1.5 hover:bg-white/5 rounded-lg transition-all text-sm opacity-75 relative"
-                                      >
-                                        {it}
-                                        <CheckCircleIcon
-                                          className={`transition-all duration-200 w-3.5 absolute right-2 ${
-                                            JSON.stringify(tagsFilter) ===
-                                            JSON.stringify({
-                                              ...tagsFilter,
-                                              ...{ [key]: it },
-                                            })
-                                              ? `opacity-100`
-                                              : `opacity-0`
-                                          }`}
-                                        />
-                                      </button>
-                                    ))}
+                                            if (isTagIncluded) {
+                                              const updatedTagsFilter = {
+                                                ...tagsFilter,
+                                              };
+                                              delete updatedTagsFilter[key];
+                                              setTagsFilter(updatedTagsFilter);
+                                            } else {
+                                              setTagsFilter({
+                                                ...tagsFilter,
+                                                ...tagObject,
+                                              });
+                                            }
+                                          }}
+                                          className="text-start flexc px-2.5 py-1.5 hover:bg-white/5 rounded-lg transition-all text-sm opacity-75 relative"
+                                        >
+                                          {it}
+                                          <CheckCircleIcon
+                                            className={`transition-all duration-200 w-3.5 absolute right-2 ${
+                                              JSON.stringify(tagsFilter) ===
+                                              JSON.stringify({
+                                                ...tagsFilter,
+                                                ...{ [key]: it },
+                                              })
+                                                ? `opacity-100`
+                                                : `opacity-0`
+                                            }`}
+                                          />
+                                        </button>
+                                      ))}
+                                  </div>
                                 </div>
-                              </div>
+                              )
                             )
+                          ) : (
+                            <div className="my-7 w-52 flexc justify-center gap-2 text-sm">
+                              <MagnifyingGlassIcon className="w-4 -ml-0.5" />
+                              No Key Tags found.
+                            </div>
                           )}
                         </div>
 
@@ -407,50 +423,84 @@ export default function LatestEvents({
               </div>
 
               <div className="grid grid-cols-1 gap-3">
-                {eventsListFilter.map((it, i) => (
-                  <div className="flex gap-5 cursor-pointer group" key={i}>
-                    <div className="w-[44px] h-[44px] aspect-square rounded-xl border border-white/10 flexc justify-center shadow-[inset_0px_-3px_12px_1px_rgba(255,255,255,0.05)]">
-                      {IconLibrary[
-                        categoriesData.find((c) => c.id == it.ec)!.ic
-                      ].i("w-[18px]")}
-                    </div>
+                {eventsListFilter.length > 0 ? (
+                  eventsListFilter.map((it, i) => (
+                    <div className="flex gap-5 cursor-pointer group" key={i}>
+                      <div className="w-[44px] h-[44px] aspect-square rounded-xl border border-white/10 flexc justify-center shadow-[inset_0px_-3px_12px_1px_rgba(255,255,255,0.05)]">
+                        {categoriesData.find((c) => c.id == it.ec)
+                          ? IconLibrary[
+                              categoriesData.find((c) => c.id == it.ec)!.ic
+                            ].i("w-[18px]")
+                          : IconLibrary[6].i("w-[18px]")}
+                      </div>
 
-                    <div className="pb-3 border-b border-white/[0.075] w-full flex justify-between">
-                      <div>
-                        <p className="font-[430] text-[15px] tracking-sm flexc gap-1.5">
-                          {it.en}
-                          <ChevronRightIcon
-                            strokeWidth={2.5}
-                            className="w-3.5 transition-all duration-200 opacity-0 group-hover:opacity-100 -translate-x-1 group-hover:translate-x-0 scale-y-90"
-                          />
-                        </p>
-                        <div className="flexc gap-2 mt-0.5">
-                          <p className="text-[13.5px] opacity-80">
-                            {categoriesData.find((c) => c.id == it.ec)?.n ||
-                              "No Category"}
+                      <div className="pb-3 border-b border-white/[0.075] w-full flex justify-between">
+                        <div>
+                          <p className="font-[430] text-[15px] tracking-sm flexc gap-1.5">
+                            {it.en}
+                            <ChevronRightIcon
+                              strokeWidth={2.5}
+                              className="w-3.5 transition-all duration-200 opacity-0 group-hover:opacity-100 -translate-x-1 group-hover:translate-x-0 scale-y-90"
+                            />
                           </p>
-                          <p className="text-[13.5px] opacity-80">•</p>
-                          <p className="text-[13.5px] opacity-80">
-                            {formatDate(it.ed)}
-                          </p>
+                          <div className="flexc gap-2 mt-0.5">
+                            <p className="text-[13.5px] opacity-80">
+                              {categoriesData.find((c) => c.id == it.ec)?.n ||
+                                "No Category"}
+                            </p>
+                            <p className="text-[13.5px] opacity-80">•</p>
+                            <p className="text-[13.5px] opacity-80">
+                              {formatDate(it.ed)}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="flexc gap-2">
+                          {it.et &&
+                            Object.entries(it.et)
+                              .slice(0, 3)
+                              .map(([key, value], i) => (
+                                <button
+                                  key={i}
+                                  className="px-3 py-1.5 text-[13px] capitalize outline-none rounded-m border border-white/10 bg-white/5 relative group overflow-hidden shadow-ins2"
+                                >
+                                  {key}:
+                                  <span className="opacity-80"> {value}</span>
+                                  <span className="absolute inset-0 bg-gradient-to-t group-hover:opacity-50 opacity-0 transition-all duration-300 from-white/10 via-white/5 to-white/[0.02]" />
+                                </button>
+                              ))}
                         </div>
                       </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="my-7">
+                    <p className="text-center text-[15px] font-medium">
+                      No events found.
+                    </p>
+                    <p className="text-center text-[15px] opacity-75">
+                      Click below to learn how to track events.
+                    </p>
 
-                      <div className="flexc gap-2">
-                        {it.et &&
-                          Object.entries(it.et).map(([key, value], i) => (
-                            <button
-                              key={i}
-                              className="px-3 py-1.5 text-[13px] capitalize outline-none rounded-m border border-white/10 bg-white/5 relative group overflow-hidden shadow-ins2"
-                            >
-                              {key}:<span className="opacity-80"> {value}</span>
-                              <span className="absolute inset-0 bg-gradient-to-t group-hover:opacity-50 opacity-0 transition-all duration-300 from-white/10 via-white/5 to-white/[0.02]" />
-                            </button>
-                          ))}
-                      </div>
+                    <div className="flexc gap-2 justify-center mt-3">
+                      <button className="grayButton group xs">
+                        API Reference
+                        <span className="group-hover:opacity-60" />
+                      </button>
+                      <button
+                        onClick={() => {
+                          setSearchFilter("");
+                          setCategoriesFilter([]);
+                          setTagsFilter({});
+                        }}
+                        className="grayButton group xs"
+                      >
+                        Reset Filters
+                        <span className="group-hover:opacity-60" />
+                      </button>
                     </div>
                   </div>
-                ))}
+                )}
 
                 <div className="flex gap-1.5 justify-end items-center mt-3">
                   <button

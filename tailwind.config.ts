@@ -39,6 +39,7 @@ const config: Config = {
             inverted: "#ffffff", // black
           },
         },
+        darkblue: "#090a10",
       },
       width: {
         88: "362px",

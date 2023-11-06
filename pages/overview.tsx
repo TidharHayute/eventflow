@@ -8,7 +8,7 @@ import DashboardHeader from "@/components/DashboardHeader";
 
 export default function Overview({ user, data }: { user: User; data: any }) {
   return (
-    <main className="bg-[#0a0a0a] relative z-10">
+    <main className="dashboardParent">
       <Head>
         <title>Overview • Eventflow</title>
       </Head>
@@ -16,14 +16,16 @@ export default function Overview({ user, data }: { user: User; data: any }) {
       <div className="dashboardGrid">
         <Sidebar uI={user} current="Overview" />
 
-        <div className="z-10">
-          <DashboardHeader />
+        <div className="dashboardWrap">
+          <div className="dashboardBody">
+            <DashboardHeader />
 
-          <div className="dashboardView">
-            <h3>Overview</h3>
-            <p className="mdP mt-1">
-              Summarized overview of your project's events and analytics.
-            </p>
+            <div className="dashboardView">
+              <h3>Overview</h3>
+              <p className="mdP mt-1">
+                Summarized overview of your project's events and analytics.
+              </p>
+            </div>
           </div>
         </div>
       </div>

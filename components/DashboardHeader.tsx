@@ -1,6 +1,7 @@
 import {
   ChatBubbleOvalLeftEllipsisIcon,
   ChatBubbleOvalLeftIcon,
+  ChevronLeftIcon,
   CodeBracketIcon,
   UserCircleIcon,
 } from "@heroicons/react/24/outline";
@@ -8,7 +9,7 @@ import Link from "next/link";
 
 import { useEffect, useRef, useState } from "react";
 
-export default function DashboardHeader() {
+export default function DashboardHeader({ showBack }: { showBack?: string }) {
   const [openFeedback, setOpenFeedback] = useState(false);
   const feedbackRef = useRef<HTMLDivElement>(null);
 
@@ -28,7 +29,20 @@ export default function DashboardHeader() {
   }, [openFeedback, feedbackRef]);
 
   return (
-    <div className="w-full border-b border-white/10 p-3 flexc justify-end gap-3">
+    <div className="w-full border-b border-white/10 p-3 flexc justify-end gap-3 relative">
+      {showBack && (
+        <Link
+          passHref
+          href={showBack}
+          className="absolute left-5 flexc gap-1 text-sm font-[450] transition-all duration-200 hover:opacity-80"
+        >
+          <ChevronLeftIcon
+            className="w-3 translate-y-[0.5px] scale-y-90"
+            strokeWidth={2}
+          />
+          Back
+        </Link>
+      )}
       <div className="relative">
         <button
           onClick={() => {

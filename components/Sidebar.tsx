@@ -16,6 +16,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import supabase from "@/utilities/supabaseClient";
 import Router from "next/router";
+import { Category } from "@/utilities/databaseTypes";
 
 const navList = [
   {
@@ -134,16 +135,18 @@ const navAccount = [
   },
 ];
 
-const cat = ["Sign-Ups", "Errors", "Webhooks", "Payments", "Support"];
-
 export default function Sidebar({
   current,
   uI,
   uD,
+  favCategories,
+  categoriesList,
 }: {
   current: string;
   uI: any;
   uD?: any;
+  favCategories?: number[];
+  categoriesList?: Category[];
 }) {
   const searchRef = useRef<HTMLInputElement>(null);
 
@@ -305,32 +308,38 @@ export default function Sidebar({
             </svg>
 
             <p className="text-[15px] tracking-sm">Favorite Categories</p>
-            <PlusIcon className="w-6 translate-x-[3px] p-[3px] border border-white/0 hover:border-white/10 hover:bg-white/5 rounded-md absolute right-0 transition-all cursor-pointer" />
+
+            <PlusIcon
+              onClick={() => Router.push("/categories")}
+              className="w-6 translate-x-[3px] p-[3px] border border-white/0 hover:border-white/10 hover:bg-white/5 rounded-md absolute right-0 transition-all cursor-pointer"
+            />
           </div>
 
-          <div className="h-[calc(100vh-58px-303px-173px-35px)] pt-0.5 pb-2.5 overflow-y-auto">
-            {cat.map((it, i) => (
-              <div key={i} className="pl-3 pt-3">
-                <div className="flex items-center gap-2 px-2.5 py-1.5 hover:bg-white/5 rounded-m transition-all">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="w-[18px] -translate-y-[0.5px] scale-x-95"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="1.25"
-                      d="m7 20 3-16m4 16 3-16m2.5 11h-16m17-6h-16"
-                    />
-                  </svg>
+          <div className="h-[calc(100vh-58px-303px-173px-35px)] pt-2 pb-2.5 overflow-y-auto">
+            {categoriesList
+              ?.filter((c) => favCategories?.includes(c.id))
+              .map((it, i) => (
+                <Link passHref href={`/category/${it.id}`} key={i} className="">
+                  <div className="flex items-center gap-2 px-2.5 py-2 hover:bg-white/5 rounded-m transition-all">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="w-[18px] -translate-y-[0px] scale-x-95"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="1.25"
+                        d="m7 20 3-16m4 16 3-16m2.5 11h-16m17-6h-16"
+                      />
+                    </svg>
 
-                  <p className="text-[14.5px] tracking-sm">{it}</p>
-                </div>
-              </div>
-            ))}
+                    <p className="text-[14.5px] tracking-sm">{it.n}</p>
+                  </div>
+                </Link>
+              ))}
           </div>
         </div>
 

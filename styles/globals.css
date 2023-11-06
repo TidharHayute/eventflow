@@ -42,7 +42,7 @@
   }
 
   .dashboardParent {
-    @apply bg-[rgb(10,11,18)] relative z-10;
+    @apply bg-darkblue relative z-10;
   }
   .dashboardGrid {
     @apply grid grid-cols-[340px_1fr];
@@ -51,7 +51,10 @@
     @apply py-2.5 pr-2.5 h-screen;
   }
   .dashboardBody {
-    @apply z-10 shadow-lg h-full overflow-y-scroll rounded-3xl bg-[rgb(4,4,10)] border border-white/10;
+    @apply z-10 shadow-lg h-full overflow-y-scroll rounded-3xl bg-[#04040b] border border-white/10;
+  }
+  .dashboardView {
+    @apply p-12 max-w-6xl mx-auto w-full;
   }
 
   .bgTealGradient {
@@ -103,8 +106,8 @@
     );
   }
 
-  .dashboardView {
-    @apply p-12 max-w-6xl mx-auto w-full;
+  .maskLinearBottom {
+    mask-image: linear-gradient(to top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0) 10%);
   }
 
   .codeContainer code {
@@ -153,7 +156,7 @@ body {
 }
 
 tr {
-  @apply grid grid-cols-[1fr_1.75fr_1fr_1fr] items-center;
+  @apply grid grid-cols-[1.25fr_1.75fr_0.85fr_1fr] items-center;
 }
 th {
   @apply text-start font-[450] text-[13px];

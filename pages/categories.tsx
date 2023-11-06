@@ -182,6 +182,7 @@ export default function Categories({
                             )}
                           </div>
                           <div
+                            className="cursor-copy"
                             onClick={async (e) => {
                               e.stopPropagation();
                               await navigator.clipboard.writeText(
@@ -376,7 +377,7 @@ export default function Categories({
                       <input
                         className="border focus:outline-none focus:border-white/20 placeholder:text-[#757575] border-white/10 rounded-m px-3 py-2.5 text-sm w-full bg-white/5"
                         placeholder="Category Name"
-                        maxLength={20}
+                        maxLength={17}
                         value={newCategory.name}
                         onChange={(e) =>
                           setNewCategory({

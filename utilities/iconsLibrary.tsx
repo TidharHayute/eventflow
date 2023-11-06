@@ -32,7 +32,7 @@ import {
 } from "@heroicons/react/24/outline";
 
 export const IconLibrary = [
-  // i - Icon, n - Icon's Number Id, k - Icon's Keywords
+  // i - Icon, k - Icon's Keywords
   {
     i: (cn: string) => <UserPlusIcon strokeWidth={1.3} className={cn} />,
     k: "User Plus Register",
@@ -62,7 +62,9 @@ export const IconLibrary = [
     k: "Support Help Chat",
   },
   {
-    i: (cn: string) => <HashtagIcon strokeWidth={1.3} className={cn} />,
+    i: (cn: string) => (
+      <HashtagIcon strokeWidth={1.3} className={`${cn} scale-y-90 `} />
+    ),
     k: "hashtag",
   },
   {

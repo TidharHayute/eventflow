@@ -284,11 +284,6 @@ export default function LatestEvents({
                       className="h-52 mt-1 w-full"
                       data={SourceData}
                       showAnimation
-
-                      // curveType="natural"
-                      // valueFormatter={(number) =>
-                      //   new Intl.NumberFormat("us").format(number).toString()
-                      // }
                     />
                   </div>
                 </div>
