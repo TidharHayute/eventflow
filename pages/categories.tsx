@@ -88,14 +88,14 @@ const keys = [
 
 export default function Categories({
   user,
-  data,
   categoriesData,
   lastEvents,
+  favCategories,
 }: {
   user: User;
-  data: any;
   categoriesData: Category[];
   lastEvents: { en: string; ec: number; last24: number }[];
+  favCategories: any;
 }) {
   const [openCreateCategory, setOpenCreateCategory] = useState(false);
   const [openCategoryIcon, setOpenCategoryIcon] = useState(false);
@@ -147,7 +147,12 @@ export default function Categories({
       </Head>
 
       <div className="dashboardGrid">
-        <Sidebar uI={user} current="Categories" />
+        <Sidebar
+          favCategories={favCategories[0].fav_categories}
+          categoriesList={categoriesData}
+          uI={user}
+          current="Categories"
+        />
 
         <div className="dashboardWrap">
           <div className="dashboardBody">
@@ -169,110 +174,121 @@ export default function Categories({
                       <th>Total Events</th>
                     </tr>
 
-                    {categoriesList.map((it, i) => (
-                      <tr
-                        onClick={() => Router.push(`/category/${it.id}`)}
-                        key={i}
-                        className="p-3.5 group border-b group border-white/10 transition-all duration-[280ms] hover:bg-white/5 cursor-pointer"
-                      >
-                        <td className="flexc gap-3.5">
-                          <div className="w-10 h-10 rounded-xl border border-white/10 flexc justify-center shadow-[inset_0px_-3px_8px_0.5px_rgba(255,255,255,0.15)]">
-                            {IconLibrary[it.ic].i(
-                              "w-[18px] stroke-white -translate-y-[0.5px]"
-                            )}
-                          </div>
-                          <div
-                            className="cursor-copy"
-                            onClick={async (e) => {
-                              e.stopPropagation();
-                              await navigator.clipboard.writeText(
-                                it.id.toString()
-                              );
-                              toast.success(`Copied ${it.n}'s Category ID`);
-                            }}
-                          >
-                            {it.n}
-                            <p className="transition-all duration-[280ms] opacity-0 text-xs h-0 group-hover:h-4 group-hover:opacity-60 flexc gap-1.5">
-                              Category ID — {it.id}
-                              <ClipboardDocumentIcon className="w-3.5 -translate-y-[0.5px]" />
-                            </p>
-                          </div>
-                        </td>
+                    {categoriesList.length > 0 ? (
+                      categoriesList.map((it, i) => (
+                        <tr
+                          onClick={() => Router.push(`/category/${it.id}`)}
+                          key={i}
+                          className="p-3.5 group border-b group border-white/10 transition-all duration-[280ms] hover:bg-white/5 cursor-pointer"
+                        >
+                          <td className="flexc gap-3.5">
+                            <div className="w-10 h-10 rounded-xl border border-white/10 flexc justify-center shadow-[inset_0px_-3px_8px_0.5px_rgba(255,255,255,0.15)]">
+                              {IconLibrary[it.ic].i(
+                                "w-[18px] stroke-white -translate-y-[0.5px]"
+                              )}
+                            </div>
+                            <div
+                              className="cursor-copy"
+                              onClick={async (e) => {
+                                e.stopPropagation();
+                                await navigator.clipboard.writeText(
+                                  it.id.toString()
+                                );
+                                toast.success(`Copied ${it.n}'s Category ID`);
+                              }}
+                            >
+                              {it.n}
+                              <p className="transition-all duration-[280ms] opacity-0 text-xs h-0 group-hover:h-4 group-hover:opacity-60 flexc gap-1.5">
+                                Category ID — {it.id}
+                                <ClipboardDocumentIcon className="w-3.5 -translate-y-[0.5px]" />
+                              </p>
+                            </div>
+                          </td>
 
-                        <td className="flexc gap-2 text-sm">
-                          <div className="relative flexc justify-center">
-                            <div className="w-1 h-1 rounded-lg bg-emerald-200" />
-                            <div className="w-1.5 h-1.5 rounded-lg bg-emerald-200/80 absolute z-[-1] animate-pingslow" />
-                          </div>
-                          {lastEvents.find((event) => event.ec === it.id)?.en ||
-                            "No events recorded yet."}
-                        </td>
+                          <td className="flexc gap-2 text-sm">
+                            <div className="relative flexc justify-center">
+                              <div className="w-1 h-1 rounded-lg bg-emerald-200" />
+                              <div className="w-1.5 h-1.5 rounded-lg bg-emerald-200/80 absolute z-[-1] animate-pingslow" />
+                            </div>
+                            {lastEvents.find((event) => event.ec === it.id)
+                              ?.en || "No events recorded yet."}
+                          </td>
 
-                        <td className="flexc gap-2 w-fit shadow-[inset_0px_-3px_8px_3px_rgba(110,231,183,0.05)] text-sm rounded-3xl border text-emerald-200 border-emerald-200/10 px-2.5 py-1">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="w-4 stroke-emerald-200"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth="1.5"
-                              d="M12 8v4.816a.5.5 0 0 0 .232.422L15 15m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                            />
-                          </svg>
-
-                          {lastEvents.find((event) => event.ec === it.id)
-                            ?.last24 || "0"}
-                        </td>
-
-                        <td className="flexc justify-between">
-                          <div className="flexc gap-2 text-sm">
+                          <td className="flexc gap-2 w-fit shadow-[inset_0px_-3px_8px_3px_rgba(110,231,183,0.05)] text-sm rounded-3xl border text-emerald-200 border-emerald-200/10 px-2.5 py-1">
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
+                              className="w-4 stroke-emerald-200"
                               fill="none"
-                              className="w-4 -ml-0.5 group-hover:animate-spinslow stroke-white"
                               viewBox="0 0 24 24"
                             >
                               <path
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="M12 2v4m0 12v4M6 12H2m20 0h-4m1.078 7.078L16.25 16.25M19.078 5 16.25 7.828M4.922 19.078 7.75 16.25M4.922 5 7.75 7.828"
+                                strokeWidth="1.5"
+                                d="M12 8v4.816a.5.5 0 0 0 .232.422L15 15m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
                               />
                             </svg>
 
-                            {it.t || 0}
-                          </div>
+                            {lastEvents.find((event) => event.ec === it.id)
+                              ?.last24 || "0"}
+                          </td>
 
-                          <div className="group flexc translate-x-0.5">
-                            <ChevronRightIcon
-                              className="w-3 scale-y-100 transition-all duration-[250ms] group-hover:translate-x-[3px]"
-                              strokeWidth={2.5}
-                              stroke="white"
-                            />
-                            <svg
-                              stroke="white"
-                              fill="white"
-                              strokeWidth={2.5}
-                              version="1.1"
-                              id="Layer_1"
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="-ml-[17px] w-5"
-                              viewBox="0 0 100 100"
-                            >
-                              <g>
+                          <td className="flexc justify-between">
+                            <div className="flexc gap-2 text-sm">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                className="w-4 -ml-0.5 group-hover:animate-spinslow stroke-white"
+                                viewBox="0 0 24 24"
+                              >
                                 <path
-                                  className="opacity-0 group-hover:opacity-100 transition-all duration-[250ms]"
-                                  d="M26,50.5c0,1.104,0.896,2,2,2h44c1.104,0,2-0.896,2-2s-0.896-2-2-2H28C26.896,48.5,26,49.396,26,50.5z"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth="2"
+                                  d="M12 2v4m0 12v4M6 12H2m20 0h-4m1.078 7.078L16.25 16.25M19.078 5 16.25 7.828M4.922 19.078 7.75 16.25M4.922 5 7.75 7.828"
                                 />
-                              </g>
-                            </svg>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
+                              </svg>
+
+                              {it.t || 0}
+                            </div>
+
+                            <div className="group flexc translate-x-0.5">
+                              <ChevronRightIcon
+                                className="w-3 scale-y-100 transition-all duration-[250ms] group-hover:translate-x-[3px]"
+                                strokeWidth={2.5}
+                                stroke="white"
+                              />
+                              <svg
+                                stroke="white"
+                                fill="white"
+                                strokeWidth={2.5}
+                                version="1.1"
+                                id="Layer_1"
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="-ml-[17px] w-5"
+                                viewBox="0 0 100 100"
+                              >
+                                <g>
+                                  <path
+                                    className="opacity-0 group-hover:opacity-100 transition-all duration-[250ms]"
+                                    d="M26,50.5c0,1.104,0.896,2,2,2h44c1.104,0,2-0.896,2-2s-0.896-2-2-2H28C26.896,48.5,26,49.396,26,50.5z"
+                                  />
+                                </g>
+                              </svg>
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <div className="my-7">
+                        <p className="text-center text-[15px] font-medium">
+                          No categories found.
+                        </p>
+                        <p className="text-center text-[15px] opacity-75">
+                          Click on Create Category first.
+                        </p>
+                      </div>
+                    )}
                   </tbody>
                 </table>
 
@@ -476,6 +492,11 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     `);
   }
 
+  const favCategories = await supabase
+    .from("users")
+    .select("fav_categories")
+    .eq("id", session.user.id);
+
   return {
     props: {
       initialSession: session,
@@ -483,6 +504,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
       data: [],
       categoriesData: categoriesData.rows,
       lastEvents: lastEventData ? lastEventData.rows : null,
+      favCategories: favCategories.data ?? null,
     },
   };
 };

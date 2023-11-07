@@ -54,9 +54,16 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             ]
           );
         }
+
         const updateTotal = await conn.execute(
           `UPDATE categories SET t = t + 1 WHERE id = ${req.body.category_id}`
         );
+
+        // const updateKeyLastUsed = await conn.execute(
+        //   `UPDATE keys SET lu = ${formattedDateForSQL(
+        //     new Date()
+        //   )} WHERE id = '${keyToken}'`
+        // );
 
         return res.status(200).json({ message: "Event recorded!" });
       } catch (error) {
@@ -64,10 +71,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           .status(500)
           .json({ error: `Internal Server Error: ${error}` });
       }
-
-      // if (findKeyToken && findKeyToken.length === 1) {
     } catch (error) {
-      // Handle any database connection or query errors here
       return res.status(500).json({ error: "Internal Server Error" });
     }
   }

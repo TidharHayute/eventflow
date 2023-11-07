@@ -22,3 +22,10 @@ export interface Event {
   ec: number;
   ed: string;
 }
+
+export interface Chart {
+  n: string;
+  t: number;
+  c?: number;
+  tag?: string;
+}

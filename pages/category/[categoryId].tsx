@@ -110,23 +110,36 @@ function formatDate(dateString: string) {
   return formattedDateTime;
 }
 
+const UsersCharts = [
+  { date: "Oct 19", Users: 180 },
+  { date: "Oct 20", Users: 195 },
+  { date: "Oct 21", Users: 210 },
+  { date: "Oct 22", Users: 165 },
+  { date: "Oct 23", Users: 180 },
+  { date: "Oct 24", Users: 155 },
+  { date: "Oct 25", Users: 225 },
+];
+
+const SourceData = [
+  { name: "Home Page Visit", value: 124 },
+  { name: "Pricing Page Visit", value: 94 },
+];
+
 export default function Categories({
   user,
-  data,
+
   categoriesData,
   categoryEvents,
   favCategories,
   categoryId,
 }: {
   user: User;
-  data: any;
+
   categoriesData: Category[];
   categoryEvents: Event[];
   favCategories: any;
   categoryId: number;
 }) {
-  console.log(categoryId);
-
   let eventsList = categoryEvents
     .map((e) => ({ ...e, ed: new Date(e.ed) }))
     .sort((a, b) => b.ed.getTime() - a.ed.getTime());
@@ -140,7 +153,7 @@ export default function Categories({
   const [selectedIcon, setSelectedIcon] = useState(category.ic);
   const [newCategoryName, setNewCategoryName] = useState("");
 
-  const [expandList, setExpandList] = useState(categoryEvents.length < 5);
+  const [expandList, setExpandList] = useState(categoryEvents.length < 6);
 
   const [favoriteCategories, setFavoriteCategories] = useState<number[]>(
     favCategories[0].fav_categories
@@ -148,6 +161,8 @@ export default function Categories({
 
   const eventsPerDay = calculateEventsPerDay(categoryEvents).EventsChart;
   const topEvents = calculateEventsPerDay(categoryEvents).topEvents;
+
+  const [pagination, setPagination] = useState(0);
 
   return (
     <main className="dashboardParent">
@@ -497,49 +512,54 @@ export default function Categories({
               >
                 <div className={`grid grid-cols-1 gap-3 pb-6`}>
                   {eventsList.length > 0 ? (
-                    eventsList.map((it, i) => (
-                      <div className="flex gap-5 cursor-pointer group" key={i}>
-                        <div className="w-[44px] h-[44px] aspect-square rounded-xl border border-white/10 flexc justify-center shadow-[inset_0px_-3px_12px_1px_rgba(255,255,255,0.05)]">
-                          {IconLibrary[category.ic].i("w-[18px]")}
-                        </div>
+                    eventsList
+                      .slice(pagination * 25, (pagination + 1) * 25)
+                      .map((it, i) => (
+                        <div
+                          className="flex gap-5 cursor-pointer group"
+                          key={i}
+                        >
+                          <div className="w-[44px] h-[44px] aspect-square rounded-xl border border-white/10 flexc justify-center shadow-[inset_0px_-3px_12px_1px_rgba(255,255,255,0.05)]">
+                            {IconLibrary[category.ic].i("w-[18px]")}
+                          </div>
 
-                        <div className="pb-3 border-b border-white/[0.075] w-full flex justify-between">
-                          <div>
-                            <p className="font-[430] text-[15px] tracking-sm flexc gap-1.5">
-                              {it.en}
-                              <ChevronRightIcon
-                                strokeWidth={2.5}
-                                className="w-3.5 transition-all duration-200 opacity-0 group-hover:opacity-100 -translate-x-1 group-hover:translate-x-0 scale-y-90"
-                              />
-                            </p>
-                            <div className="flexc gap-2 mt-0.5">
-                              <p className="text-[13.5px] opacity-80">
-                                {formatDate(it.ed.toString())}
+                          <div className="pb-3 border-b border-white/[0.075] w-full flex justify-between">
+                            <div>
+                              <p className="font-[430] text-[15px] tracking-sm flexc gap-1.5">
+                                {it.en}
+                                <ChevronRightIcon
+                                  strokeWidth={2.5}
+                                  className="w-3.5 transition-all duration-200 opacity-0 group-hover:opacity-100 -translate-x-1 group-hover:translate-x-0 scale-y-90"
+                                />
                               </p>
+                              <div className="flexc gap-2 mt-0.5">
+                                <p className="text-[13.5px] opacity-80">
+                                  {formatDate(it.ed.toString())}
+                                </p>
+                              </div>
+                            </div>
+
+                            <div className="flexc gap-2">
+                              {it.et &&
+                                Object.entries(it.et)
+                                  .slice(0, 3)
+                                  .map(([key, value], i) => (
+                                    <button
+                                      key={i}
+                                      className="px-3 py-1.5 text-[13px] capitalize outline-none rounded-m border border-white/10 bg-white/5 relative group overflow-hidden shadow-ins2"
+                                    >
+                                      {key}:
+                                      <span className="opacity-80">
+                                        {" "}
+                                        {value as string}
+                                      </span>
+                                      <span className="absolute inset-0 bg-gradient-to-t group-hover:opacity-50 opacity-0 transition-all duration-300 from-white/10 via-white/5 to-white/[0.02]" />
+                                    </button>
+                                  ))}
                             </div>
                           </div>
-
-                          <div className="flexc gap-2">
-                            {it.et &&
-                              Object.entries(it.et)
-                                .slice(0, 3)
-                                .map(([key, value], i) => (
-                                  <button
-                                    key={i}
-                                    className="px-3 py-1.5 text-[13px] capitalize outline-none rounded-m border border-white/10 bg-white/5 relative group overflow-hidden shadow-ins2"
-                                  >
-                                    {key}:
-                                    <span className="opacity-80">
-                                      {" "}
-                                      {value as string}
-                                    </span>
-                                    <span className="absolute inset-0 bg-gradient-to-t group-hover:opacity-50 opacity-0 transition-all duration-300 from-white/10 via-white/5 to-white/[0.02]" />
-                                  </button>
-                                ))}
-                          </div>
                         </div>
-                      </div>
-                    ))
+                      ))
                   ) : (
                     <div className="my-7">
                       <p className="text-center text-[15px] font-medium">
@@ -560,21 +580,22 @@ export default function Categories({
                 </div>
 
                 <div className="flex gap-1.5 justify-end items-center">
-                  <button
-                    className={`w-7 h-7 text-[13px] transition-all duration-200 hover:-translate-y-0.5 hover:bg-white/[0.075] flexc justify-center border border-white/10 bg-white/5 shadow-ins2 rounded-lg`}
-                  >
-                    1
-                  </button>
-                  <button
-                    className={`w-7 h-7 text-[13px] transition-all duration-200 hover:-translate-y-0.5 hover:bg-white/[0.075] flexc justify-center border border-white/10 shadow-ins2 rounded-lg`}
-                  >
-                    2
-                  </button>
-                  <button
-                    className={`w-7 h-7 text-[13px] transition-all duration-200 hover:-translate-y-0.5 hover:bg-white/[0.075] flexc justify-center border border-white/10 shadow-ins2 rounded-lg`}
-                  >
-                    3
-                  </button>
+                  {Array.from(
+                    { length: Math.ceil(eventsList.length / 24) },
+                    (_, i) => (
+                      <button
+                        onClick={() => setPagination(i)}
+                        className={`w-7 h-7 text-[13px] transition-all duration-200 hover:-translate-y-0.5 hover:bg-white/[0.075] flexc justify-center border border-white/10 ${
+                          pagination == i
+                            ? `bg-white/[0.075]`
+                            : `bg-white/[0.015]`
+                        }  shadow-ins2 rounded-lg`}
+                        key={i}
+                      >
+                        {i + 1}
+                      </button>
+                    )
+                  )}
                 </div>
 
                 <button
@@ -605,8 +626,8 @@ export default function Categories({
                   <div className="flex gap-10 p-4 h-52">
                     <AreaChart
                       className="h-44 mt-2 w-full"
-                      data={eventsPerDay}
-                      categories={["Events"]}
+                      data={UsersCharts}
+                      categories={["Users"]}
                       showYAxis={false}
                       showAnimation
                       index="date"
@@ -659,7 +680,7 @@ export default function Categories({
                   <div className="flexc flex-col p-4 h-52 overflow-hidden">
                     <BarList
                       className="h-full mt-1 w-full"
-                      data={topEvents}
+                      data={SourceData}
                       showAnimation
                     />
                     {topEvents.length == 0 && (
@@ -707,13 +728,10 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     .select("fav_categories")
     .eq("id", session.user.id);
 
-  console.log(query.categoryId);
-
   return {
     props: {
       initialSession: session,
       user: session.user,
-      data: [],
       categoryId: query.categoryId,
       categoriesData: categoriesData.rows ?? null,
       categoryEvents: categoryEvents.rows ?? null,

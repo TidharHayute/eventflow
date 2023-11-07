@@ -5,8 +5,19 @@ import { useEffect, useRef } from "react";
 import Head from "next/head";
 import Sidebar from "@/components/Sidebar";
 import DashboardHeader from "@/components/DashboardHeader";
+import { connect } from "@planetscale/database";
+import { config } from "@/utilities/supabaseClient";
+import { Category } from "@/utilities/databaseTypes";
 
-export default function Overview({ user, data }: { user: User; data: any }) {
+export default function Overview({
+  user,
+  categoriesData,
+  favCategories,
+}: {
+  user: User;
+  categoriesData: Category[];
+  favCategories: any;
+}) {
   return (
     <main className="dashboardParent">
       <Head>
@@ -14,7 +25,12 @@ export default function Overview({ user, data }: { user: User; data: any }) {
       </Head>
 
       <div className="dashboardGrid">
-        <Sidebar uI={user} current="Overview" />
+        <Sidebar
+          favCategories={favCategories[0].fav_categories}
+          categoriesList={categoriesData}
+          uI={user}
+          current="Overview"
+        />
 
         <div className="dashboardWrap">
           <div className="dashboardBody">
@@ -47,13 +63,22 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
       },
     };
 
-  const { data } = await supabase.from("users").select("*");
+  const conn = await connect(config);
+  const categoriesData = await conn.execute(
+    `select * from categories where uid = '${session.user.id}' `
+  );
+
+  const favCategories = await supabase
+    .from("users")
+    .select("fav_categories")
+    .eq("id", session.user.id);
 
   return {
     props: {
       initialSession: session,
       user: session.user,
-      data: data ?? [],
+      categoriesData: categoriesData.rows ?? null,
+      favCategories: favCategories.data ?? null,
     },
   };
 };

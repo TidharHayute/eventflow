@@ -10,8 +10,19 @@ import { Kbd } from "@radix-ui/themes";
 import { AnimateArrow } from "@/components/Animation";
 import { HashtagIcon, SignalIcon } from "@heroicons/react/24/outline";
 import DashboardHeader from "@/components/DashboardHeader";
+import { connect } from "@planetscale/database";
+import { config } from "@/utilities/supabaseClient";
+import { Category } from "@/utilities/databaseTypes";
 
-export default function Setup({ user, data }: { user: User; data: any }) {
+export default function Setup({
+  user,
+  categoriesData,
+  favCategories,
+}: {
+  user: User;
+  categoriesData: Category[];
+  favCategories: any;
+}) {
   const [current, setCurrent] = useState(0);
 
   const [codeLang, setCodeLang] = useState(0);
@@ -23,7 +34,12 @@ export default function Setup({ user, data }: { user: User; data: any }) {
       </Head>
 
       <div className="dashboardGrid">
-        <Sidebar uI={user} current="Setup & Onboarding" />
+        <Sidebar
+          favCategories={favCategories[0].fav_categories}
+          categoriesList={categoriesData}
+          uI={user}
+          current="Setup & Onboarding"
+        />
 
         <div className="dashboardWrap">
           <div className="dashboardBody">
@@ -363,13 +379,24 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
       },
     };
 
-  const { data } = await supabase.from("users").select("*");
+  const conn = connect(config);
+
+  const categoriesData = await conn.execute(
+    `select * from categories where uid = '${session.user.id}' `
+  );
+
+  const favCategories = await supabase
+    .from("users")
+    .select("fav_categories")
+    .eq("id", session.user.id);
 
   return {
     props: {
       initialSession: session,
       user: session.user,
-      data: data ?? [],
+
+      categoriesData: categoriesData.rows ?? null,
+      favCategories: favCategories.data ?? null,
     },
   };
 };

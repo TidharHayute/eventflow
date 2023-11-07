@@ -22,7 +22,7 @@ import { useRouter } from "next/router";
 
 import { connect } from "@planetscale/database";
 import { toast } from "sonner";
-import { Key } from "@/utilities/databaseTypes";
+import { Category, Key } from "@/utilities/databaseTypes";
 
 const config = {
   host: process.env.NEXT_PUBLIC_PS_HOST,
@@ -47,12 +47,14 @@ function generateKeyToken(length: number) {
 
 export default function Keys({
   user,
-  data,
   keysData,
+  categoriesData,
+  favCategories,
 }: {
   user: User;
-  data: any;
   keysData: Key[];
+  categoriesData: Category[];
+  favCategories: any;
 }) {
   const [codeLang, setCodeLang] = useState(0);
 
@@ -108,7 +110,12 @@ export default function Keys({
       </Head>
 
       <div className={`dashboardGrid`}>
-        <Sidebar uI={user} current="Keys & Tokens" />
+        <Sidebar
+          favCategories={favCategories[0].fav_categories}
+          categoriesList={categoriesData}
+          uI={user}
+          current="Keys & Tokens"
+        />
 
         <div className="dashboardWrap">
           <div className="dashboardBody">
@@ -439,17 +446,27 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     };
 
   const conn = await connect(config);
-  console.log(session.user.id);
+
   const keysData = await conn.execute(
     `select * from keys where uid = '${session.user.id}'`
   );
+
+  const categoriesData = await conn.execute(
+    `select * from categories where uid = '${session.user.id}' `
+  );
+
+  const favCategories = await supabase
+    .from("users")
+    .select("fav_categories")
+    .eq("id", session.user.id);
 
   return {
     props: {
       initialSession: session,
       user: session.user,
-      data: [],
       keysData: keysData.rows,
+      categoriesData: categoriesData.rows ?? null,
+      favCategories: favCategories.data ?? null,
     },
   };
 };

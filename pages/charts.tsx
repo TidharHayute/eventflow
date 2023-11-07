@@ -7,7 +7,9 @@ import Sidebar from "@/components/Sidebar";
 import DashboardHeader from "@/components/DashboardHeader";
 import {
   BanknotesIcon,
+  ChartBarIcon,
   ChartBarSquareIcon,
+  ChartPieIcon,
   EllipsisVerticalIcon,
   ExclamationTriangleIcon,
   LifebuoyIcon,
@@ -15,11 +17,16 @@ import {
   PresentationChartBarIcon,
   QueueListIcon,
   SignalIcon,
+  VariableIcon,
 } from "@heroicons/react/24/outline";
 
 import { ColorNames, ColorValues } from "../utilities/rechartColors";
 
 import { BarList, DonutChart, AreaChart, BarChart } from "@tremor/react";
+import { connect } from "@planetscale/database";
+import { config } from "@/utilities/supabaseClient";
+import { Category, Chart } from "@/utilities/databaseTypes";
+import { Dialog, DropdownMenu } from "@radix-ui/themes";
 
 const UserSource = [
   { name: "Facebook", users: 202 },
@@ -41,18 +48,20 @@ const UsersCharts = [
 
 const SourceData = [
   { name: "Stripe: Payment Succeded", value: 324 },
-  { name: "New File Uploaded", value: 249 },
+  { name: "New File Uploaded", value: 267 },
+  { name: "Subscription Canceled", value: 245 },
+  { name: "User Activated", value: 159 },
 ];
 
 const chartdata2 = [
   {
     name: "Errors",
-    "Group A": 590,
-    "Group B": 338,
-    "Group C": 538,
-    "Group D": 396,
-    "Group E": 338,
-    "Group F": 436,
+    "Error 403": 590,
+    "Error 500": 338,
+    "Error 304": 538,
+    "Error 502": 396,
+    "Error 503": 338,
+    "Error 402": 436,
   },
 ];
 
@@ -118,11 +127,22 @@ const keys = [
 
 export default function LatestEvents({
   user,
-  data,
+
+  categoriesData,
+  favCategories,
 }: {
   user: User;
   data: any;
+  categoriesData: Category[];
+  favCategories: any;
 }) {
+  const [newChartObject, setNewChartObject] = useState<Chart>({
+    c: 0,
+    n: "",
+    t: 0,
+    tag: "",
+  });
+
   return (
     <main className="dashboardParent">
       <Head>
@@ -130,7 +150,12 @@ export default function LatestEvents({
       </Head>
 
       <div className="dashboardGrid">
-        <Sidebar uI={user} current="Charts" />
+        <Sidebar
+          favCategories={favCategories[0].fav_categories}
+          categoriesList={categoriesData}
+          uI={user}
+          current="Charts"
+        />
 
         <div className="dashboardWrap">
           <div className="dashboardBody">
@@ -144,11 +169,53 @@ export default function LatestEvents({
 
               <div className="mt-10 mb-6 flexc justify-between pb-4 border-b border-white/10">
                 <div className="flex gap-3">
-                  <button className="grayButton xs group">
-                    <PlusIcon className="w-4 -ml-[3px]" />
-                    Create a Chart
-                    <span className="group-hover:opacity-60" />
-                  </button>
+                  <DropdownMenu.Root
+                    onOpenChange={() =>
+                      setNewChartObject({
+                        c: 0,
+                        n: "",
+                        t: 0,
+                        tag: "",
+                      })
+                    }
+                  >
+                    <DropdownMenu.Trigger>
+                      <button className="grayButton xs group">
+                        <PlusIcon className="w-4 -ml-[3px]" />
+                        Create a Chart
+                        <span className="group-hover:opacity-60" />
+                      </button>
+                    </DropdownMenu.Trigger>
+
+                    <DropdownMenu.Content
+                      style={{
+                        marginTop: "5px",
+                        background: "#151515",
+                      }}
+                    >
+                      <div className="-m-0.5">
+                        <button className="flexc text-[15px] w-[175px] relative gap-2 px-2.5 py-[7px] rounded-lg hover:bg-white/5 text-sm">
+                          <ChartBarSquareIcon className="w-4" />
+                          Area Chart
+                        </button>
+
+                        <button className="flexc text-[15px] w-[175px] relative gap-2 px-2.5 py-[7px] rounded-lg hover:bg-white/5 text-sm">
+                          <ChartPieIcon className="w-4" />
+                          Pie Chart
+                        </button>
+
+                        <button className="flexc text-[15px] w-[175px] relative gap-2 px-2.5 py-[7px] rounded-lg hover:bg-white/5 text-sm">
+                          <ChartBarIcon className="w-4 rotate-90" />
+                          Bar Chart
+                        </button>
+
+                        <button className="flexc text-[15px] w-[175px] relative gap-2 px-2.5 py-[7px] rounded-lg hover:bg-white/5 text-sm">
+                          <VariableIcon className="w-4" />
+                          Number Chart
+                        </button>
+                      </div>
+                    </DropdownMenu.Content>
+                  </DropdownMenu.Root>
 
                   <button className="grayButton xs group">
                     <PresentationChartBarIcon className="w-4 -ml-0.5" />
@@ -307,12 +374,12 @@ export default function LatestEvents({
                       className="h-52 mt-1 w-full"
                       index="name"
                       categories={[
-                        "Group A",
-                        "Group B",
-                        "Group C",
-                        "Group D",
-                        "Group E",
-                        "Group F",
+                        "Error 403",
+                        "Error 500",
+                        "Error 304",
+                        "Error 502",
+                        "Error 503",
+                        "Error 402",
                       ]}
                       showLegend={false}
                       showYAxis={false}
@@ -347,13 +414,23 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
       },
     };
 
-  const { data } = await supabase.from("users").select("*");
+  const conn = connect(config);
+
+  const categoriesData = await conn.execute(
+    `select * from categories where uid = '${session.user.id}' `
+  );
+
+  const favCategories = await supabase
+    .from("users")
+    .select("fav_categories")
+    .eq("id", session.user.id);
 
   return {
     props: {
       initialSession: session,
       user: session.user,
-      data: data ?? [],
+      categoriesData: categoriesData.rows ?? null,
+      favCategories: favCategories.data ?? null,
     },
   };
 };

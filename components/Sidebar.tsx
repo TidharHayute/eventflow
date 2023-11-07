@@ -315,12 +315,12 @@ export default function Sidebar({
             />
           </div>
 
-          <div className="h-[calc(100vh-58px-303px-173px-35px)] pt-2 pb-2.5 overflow-y-auto">
+          <div className="h-[calc(100vh-58px-303px-173px-35px)] pt-2 pb-2.5 pl-2.5 overflow-y-auto">
             {categoriesList
               ?.filter((c) => favCategories?.includes(c.id))
               .map((it, i) => (
                 <Link passHref href={`/category/${it.id}`} key={i} className="">
-                  <div className="flex items-center gap-2 px-2.5 py-2 hover:bg-white/5 rounded-m transition-all">
+                  <div className="flex items-center gap-2 px-2.5 py-2 mb-1.5 hover:bg-white/5 rounded-m transition-all">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       className="w-[18px] -translate-y-[0px] scale-x-95"

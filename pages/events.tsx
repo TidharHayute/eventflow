@@ -47,20 +47,22 @@ function formatDate(date: Date) {
 
 export default function LatestEvents({
   user,
-  data,
   eventsList,
   categoriesData,
+  favCategories,
 }: {
   user: User;
-  data: any;
   eventsList: Event[];
   categoriesData: Category[];
+  favCategories: any;
 }) {
   const [categoriesFilter, setCategoriesFilter] = useState<any[]>([]);
   const [tagsFilter, setTagsFilter] = useState<any>({});
   const [sortBy, setSortBy] = useState();
 
   const [searchFilter, setSearchFilter] = useState("");
+
+  const [pagination, setPagination] = useState(0);
 
   const uniqueKeyTags: any = {};
 
@@ -111,7 +113,12 @@ export default function LatestEvents({
       </Head>
 
       <div className="dashboardGrid">
-        <Sidebar uI={user} current="Latest Events" />
+        <Sidebar
+          favCategories={favCategories[0].fav_categories}
+          categoriesList={categoriesData}
+          uI={user}
+          current="Latest Events"
+        />
 
         <div className="dashboardWrap">
           <div className="dashboardBody">
@@ -424,55 +431,57 @@ export default function LatestEvents({
 
               <div className="grid grid-cols-1 gap-3">
                 {eventsListFilter.length > 0 ? (
-                  eventsListFilter.map((it, i) => (
-                    <div className="flex gap-5 cursor-pointer group" key={i}>
-                      <div className="w-[44px] h-[44px] aspect-square rounded-xl border border-white/10 flexc justify-center shadow-[inset_0px_-3px_12px_1px_rgba(255,255,255,0.05)]">
-                        {categoriesData.find((c) => c.id == it.ec)
-                          ? IconLibrary[
-                              categoriesData.find((c) => c.id == it.ec)!.ic
-                            ].i("w-[18px]")
-                          : IconLibrary[6].i("w-[18px]")}
-                      </div>
+                  eventsListFilter
+                    .slice(pagination * 25, (pagination + 1) * 25)
+                    .map((it, i) => (
+                      <div className="flex gap-5 cursor-pointer group" key={i}>
+                        <div className="w-[44px] h-[44px] aspect-square rounded-xl border border-white/10 flexc justify-center shadow-[inset_0px_-3px_12px_1px_rgba(255,255,255,0.05)]">
+                          {categoriesData.find((c) => c.id == it.ec)
+                            ? IconLibrary[
+                                categoriesData.find((c) => c.id == it.ec)!.ic
+                              ].i("w-[18px]")
+                            : IconLibrary[6].i("w-[18px]")}
+                        </div>
 
-                      <div className="pb-3 border-b border-white/[0.075] w-full flex justify-between">
-                        <div>
-                          <p className="font-[430] text-[15px] tracking-sm flexc gap-1.5">
-                            {it.en}
-                            <ChevronRightIcon
-                              strokeWidth={2.5}
-                              className="w-3.5 transition-all duration-200 opacity-0 group-hover:opacity-100 -translate-x-1 group-hover:translate-x-0 scale-y-90"
-                            />
-                          </p>
-                          <div className="flexc gap-2 mt-0.5">
-                            <p className="text-[13.5px] opacity-80">
-                              {categoriesData.find((c) => c.id == it.ec)?.n ||
-                                "No Category"}
+                        <div className="pb-3 border-b border-white/[0.075] w-full flex justify-between">
+                          <div>
+                            <p className="font-[430] text-[15px] tracking-sm flexc gap-1.5">
+                              {it.en}
+                              <ChevronRightIcon
+                                strokeWidth={2.5}
+                                className="w-3.5 transition-all duration-200 opacity-0 group-hover:opacity-100 -translate-x-1 group-hover:translate-x-0 scale-y-90"
+                              />
                             </p>
-                            <p className="text-[13.5px] opacity-80">•</p>
-                            <p className="text-[13.5px] opacity-80">
-                              {formatDate(it.ed)}
-                            </p>
+                            <div className="flexc gap-2 mt-0.5">
+                              <p className="text-[13.5px] opacity-80">
+                                {categoriesData.find((c) => c.id == it.ec)?.n ||
+                                  "No Category"}
+                              </p>
+                              <p className="text-[13.5px] opacity-80">•</p>
+                              <p className="text-[13.5px] opacity-80">
+                                {formatDate(it.ed)}
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className="flexc gap-2">
+                            {it.et &&
+                              Object.entries(it.et)
+                                .slice(0, 3)
+                                .map(([key, value], i) => (
+                                  <button
+                                    key={i}
+                                    className="px-3 py-1.5 text-[13px] capitalize outline-none rounded-m border border-white/10 bg-white/5 relative group overflow-hidden shadow-ins2"
+                                  >
+                                    {key}:
+                                    <span className="opacity-80"> {value}</span>
+                                    <span className="absolute inset-0 bg-gradient-to-t group-hover:opacity-50 opacity-0 transition-all duration-300 from-white/10 via-white/5 to-white/[0.02]" />
+                                  </button>
+                                ))}
                           </div>
                         </div>
-
-                        <div className="flexc gap-2">
-                          {it.et &&
-                            Object.entries(it.et)
-                              .slice(0, 3)
-                              .map(([key, value], i) => (
-                                <button
-                                  key={i}
-                                  className="px-3 py-1.5 text-[13px] capitalize outline-none rounded-m border border-white/10 bg-white/5 relative group overflow-hidden shadow-ins2"
-                                >
-                                  {key}:
-                                  <span className="opacity-80"> {value}</span>
-                                  <span className="absolute inset-0 bg-gradient-to-t group-hover:opacity-50 opacity-0 transition-all duration-300 from-white/10 via-white/5 to-white/[0.02]" />
-                                </button>
-                              ))}
-                        </div>
                       </div>
-                    </div>
-                  ))
+                    ))
                 ) : (
                   <div className="my-7">
                     <p className="text-center text-[15px] font-medium">
@@ -503,21 +512,22 @@ export default function LatestEvents({
                 )}
 
                 <div className="flex gap-1.5 justify-end items-center mt-3">
-                  <button
-                    className={`w-7 h-7 text-[13px] transition-all duration-200 hover:-translate-y-0.5 hover:bg-white/[0.075] flexc justify-center border border-white/10 bg-white/5 shadow-ins2 rounded-lg`}
-                  >
-                    1
-                  </button>
-                  <button
-                    className={`w-7 h-7 text-[13px] transition-all duration-200 hover:-translate-y-0.5 hover:bg-white/[0.075] flexc justify-center border border-white/10 shadow-ins2 rounded-lg`}
-                  >
-                    2
-                  </button>
-                  <button
-                    className={`w-7 h-7 text-[13px] transition-all duration-200 hover:-translate-y-0.5 hover:bg-white/[0.075] flexc justify-center border border-white/10 shadow-ins2 rounded-lg`}
-                  >
-                    3
-                  </button>
+                  {Array.from(
+                    { length: Math.ceil(eventsListFilter.length / 24) },
+                    (_, i) => (
+                      <button
+                        onClick={() => setPagination(i)}
+                        className={`w-7 h-7 text-[13px] transition-all duration-200 hover:-translate-y-0.5 hover:bg-white/[0.075] flexc justify-center border border-white/10 ${
+                          pagination == i
+                            ? `bg-white/[0.075]`
+                            : `bg-white/[0.015]`
+                        }  shadow-ins2 rounded-lg`}
+                        key={i}
+                      >
+                        {i + 1}
+                      </button>
+                    )
+                  )}
                 </div>
               </div>
             </div>
@@ -552,13 +562,18 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     `select * from categories where uid = '${session.user.id}' `
   );
 
+  const favCategories = await supabase
+    .from("users")
+    .select("fav_categories")
+    .eq("id", session.user.id);
+
   return {
     props: {
       initialSession: session,
       user: session.user,
-      data: [],
       eventsList: eventsList.rows,
       categoriesData: categoriesData.rows,
+      favCategories: favCategories.data ?? null,
     },
   };
 };
