@@ -45,7 +45,7 @@
     @apply bg-darkblue relative z-10;
   }
   .dashboardGrid {
-    @apply grid grid-cols-[340px_1fr];
+    @apply grid grid-cols-[340px_1fr] max-[1400px]:grid-cols-[290px_1fr];
   }
   .dashboardWrap {
     @apply py-2.5 pr-2.5 h-screen;
@@ -54,7 +54,7 @@
     @apply z-10 shadow-lg h-full overflow-y-scroll rounded-3xl bg-[#04040b] border border-white/10;
   }
   .dashboardView {
-    @apply p-12 max-w-6xl mx-auto w-full;
+    @apply p-12 max-w-6xl max-[1500px]:p-8 mx-auto w-full;
   }
 
   .bgTealGradient {
@@ -147,6 +147,10 @@
   button.xs,
   a.xs {
     @apply px-3.5 py-1.5 shadow-ins2;
+  }
+
+  .iconWrapper {
+    @apply w-[44px] h-[44px] aspect-square rounded-xl border border-white/10 flexc justify-center shadow-[inset_0px_-3px_12px_1px_rgba(255,255,255,0.05)];
   }
 }
 

@@ -238,8 +238,10 @@ export default function Sidebar({
               passHref
               href={it.l}
               className={`${
-                current == it.t ? `bg-white/5 font-[475]` : `text-white/70`
-              } px-2.5 py-1.5 text-[14px] rounded-lg transition-all hover:bg-white/5 flex items-center gap-2`}
+                current == it.t
+                  ? `bg-white/5`
+                  : `text-white/70 hover:bg-white/[0.035]`
+              } px-2.5 py-1.5 text-[14px] rounded-lg transition-all flex items-center gap-2`}
             >
               {" "}
               {it.ic} {it.t}{" "}

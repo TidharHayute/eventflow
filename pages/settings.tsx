@@ -8,7 +8,14 @@ import DashboardHeader from "@/components/DashboardHeader";
 import { connect } from "@planetscale/database";
 import { config } from "@/utilities/supabaseClient";
 import { Category } from "@/utilities/databaseTypes";
-import { ChevronRightIcon } from "@heroicons/react/24/outline";
+import {
+  ChartBarSquareIcon,
+  ChevronRightIcon,
+  CreditCardIcon,
+  LifebuoyIcon,
+  UserCircleIcon,
+  UsersIcon,
+} from "@heroicons/react/24/outline";
 
 export default function Overview({
   user,
@@ -24,7 +31,7 @@ export default function Overview({
   return (
     <main className="dashboardParent">
       <Head>
-        <title>Overview • Eventflow</title>
+        <title>Account • Eventflow</title>
       </Head>
 
       <div className="dashboardGrid">
@@ -32,7 +39,7 @@ export default function Overview({
           favCategories={favCategories[0].fav_categories}
           categoriesList={categoriesData}
           uI={user}
-          current="Overview"
+          current="Account"
         />
 
         <div className="dashboardWrap">
@@ -40,44 +47,29 @@ export default function Overview({
             <DashboardHeader />
 
             <div className="dashboardView">
-              <h3>Overview</h3>
-              <p className="mdP mt-1 w-full pb-3.5 mb-5 border-b  border-white/10">
-                Summarized overview of your project's events and analytics.
-              </p>
-
-              <div className="grid grid-cols-4 gap-5">
-                <div className="bg-white/5 group cursor-pointer h-32 border border-white/10 rounded-[18px] p-5 flex flex-col justify-between">
-                  <div className="flexc justify-between">
-                    <p className="flexc gap-1.5 opacity-70 text-[13.5px] font-medium tracking-sm">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        className="w-4 -ml-0.5 -translate-y-[0.5px] stroke-white"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M12 2v4m0 12v4M6 12H2m20 0h-4m1.078 7.078L16.25 16.25M19.078 5 16.25 7.828M4.922 19.078 7.75 16.25M4.922 5 7.75 7.828"
-                        />
-                      </svg>
-                      Events
-                    </p>
-
-                    <ChevronRightIcon
-                      className="w-3.5 stroke-white -mr-1 scale-95 opacity-60 group-hover:opacity-100 transition-all duration-200"
-                      strokeWidth={1.75}
-                    />
-                  </div>
-
-                  <div className="flex justify-between items-end">
-                    <p className="font-uncut font-semibold text-3xl leading-none tracking-tight">
-                      2,391
-                    </p>
-                    <p className="opacity-75 font-normal text-[13px]">7 Days</p>
-                  </div>
-                </div>
+              <h3>Settings</h3>
+              <p className="mdP mt-1">Manage your Eventflow account.</p>
+              <div className="mt-10 mb-6 flexc gap-3 pb-4 border-b border-white/10">
+                <button className="grayButton xs group">
+                  <UserCircleIcon strokeWidth={1.4} className="w-4 -ml-[3px]" />
+                  Account
+                  <span className="group-hover:opacity-60" />
+                </button>
+                <button className="grayButton xs group">
+                  <CreditCardIcon strokeWidth={1.4} className="w-4 -ml-[3px]" />
+                  Billing
+                  <span className="group-hover:opacity-60" />
+                </button>
+                <button className="grayButton xs group">
+                  <UsersIcon strokeWidth={1.4} className="w-4 -ml-[3px]" />
+                  Team
+                  <span className="group-hover:opacity-60" />
+                </button>
+                <button className="grayButton xs group">
+                  <LifebuoyIcon strokeWidth={1.4} className="w-4 -ml-[3px]" />
+                  Support
+                  <span className="group-hover:opacity-60" />
+                </button>
               </div>
             </div>
           </div>

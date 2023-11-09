@@ -38,7 +38,7 @@ export default function Setup({
           favCategories={favCategories[0].fav_categories}
           categoriesList={categoriesData}
           uI={user}
-          current="Setup & Onboarding"
+          current="Onboarding"
         />
 
         <div className="dashboardWrap">

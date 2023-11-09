@@ -68,6 +68,7 @@ const config: Config = {
         lgb: "0px 0px 32px 2px rgba(0,0,0,0.1)",
         ins: "inset -1px -1px 30px 0px rgba(255,255,255,0.1)",
         ins2: "inset 0px -1px 10px 0px rgba(255,255,255,0.05)",
+        ins3: "inset 0px -2px 10px 4px rgba(255,255,255,0.015)",
         "dark-tremor-input": "0 1px 2px 0 rgb(0 0 0 / 0.05)",
         "dark-tremor-card":
           "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",

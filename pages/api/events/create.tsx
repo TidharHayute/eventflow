@@ -1,5 +1,5 @@
 import { formattedDateForSQL } from "@/pages/keys";
-import { config } from "@/utilities/supabaseClient";
+import supabase, { config } from "@/utilities/supabaseClient";
 import { connect } from "@planetscale/database";
 import { NextApiRequest, NextApiResponse } from "next";
 
@@ -31,7 +31,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
       try {
         if (req.body.tags) {
-          const insertEvent = await conn.execute(
+          await conn.execute(
             `insert into events(uid, en, edes, et, ec, ed) values(?,?,?,?,?,?)`,
             [
               userId,
@@ -43,7 +43,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             ]
           );
         } else {
-          const insertEvent = await conn.execute(
+          await conn.execute(
             `insert into events(uid, en, edes, ec, ed) values(?,?,?,?,?)`,
             [
               userId,
@@ -55,15 +55,18 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           );
         }
 
-        const updateTotal = await conn.execute(
+        await conn.execute(
           `UPDATE categories SET t = t + 1 WHERE id = ${req.body.category_id}`
         );
 
-        // const updateKeyLastUsed = await conn.execute(
-        //   `UPDATE keys SET lu = ${formattedDateForSQL(
-        //     new Date()
-        //   )} WHERE id = '${keyToken}'`
-        // );
+        await conn.execute(`UPDATE keys SET lu = ? WHERE id = '${keyToken}'`, [
+          formattedDateForSQL(new Date()),
+        ]);
+
+        const supa = await supabase.rpc("update_monthly_usage", {
+          key: userId,
+        });
+        console.log(supa, userId);
 
         return res.status(200).json({ message: "Event recorded!" });
       } catch (error) {

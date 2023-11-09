@@ -1,26 +1,19 @@
 import { User, createPagesServerClient } from "@supabase/auth-helpers-nextjs";
 import { GetServerSidePropsContext } from "next";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Head from "next/head";
 import Sidebar from "@/components/Sidebar";
 import DashboardHeader from "@/components/DashboardHeader";
 import {
-  BanknotesIcon,
   ChartBarSquareIcon,
   ChevronDownIcon,
   ChevronRightIcon,
-  ExclamationTriangleIcon,
   HashtagIcon,
-  LifebuoyIcon,
   MagnifyingGlassIcon,
-  PencilIcon,
   PencilSquareIcon,
-  PlusIcon,
-  SignalIcon,
   StarIcon,
   TrashIcon,
-  UserPlusIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 
@@ -103,7 +96,7 @@ function formatDate(dateString: string) {
     minute: "2-digit",
   });
 
-  const formattedDateTime = `${dayWithSuffix} ${month}, ${
+  const formattedDateTime = `${month} ${dayWithSuffix}, ${
     time.charAt(0) == "0" ? time.substring(1) : time
   }`;
 
@@ -140,9 +133,11 @@ export default function Categories({
   favCategories: any;
   categoryId: number;
 }) {
-  let eventsList = categoryEvents
-    .map((e) => ({ ...e, ed: new Date(e.ed) }))
-    .sort((a, b) => b.ed.getTime() - a.ed.getTime());
+  const [eventsList, setEventsList] = useState(
+    categoryEvents
+      .map((e) => ({ ...e, ed: new Date(e.ed) }))
+      .sort((a, b) => b.ed.getTime() - a.ed.getTime())
+  );
 
   const [category, setCategory] = useState(
     categoriesData.find((category: any) => category.id == categoryId)!
@@ -163,6 +158,8 @@ export default function Categories({
   const topEvents = calculateEventsPerDay(categoryEvents).topEvents;
 
   const [pagination, setPagination] = useState(0);
+
+  const [openEventDialog, setOpenEventDialog] = useState(-1);
 
   return (
     <main className="dashboardParent">
@@ -289,7 +286,7 @@ export default function Categories({
                               async function updateCategoryIcon() {
                                 const conn = connect(config);
 
-                                const dd = await conn.execute(
+                                await conn.execute(
                                   `update categories set ic = ${selectedIcon} where id = ${category.id}`
                                 );
                               }
@@ -516,10 +513,11 @@ export default function Categories({
                       .slice(pagination * 25, (pagination + 1) * 25)
                       .map((it, i) => (
                         <div
+                          onClick={() => setOpenEventDialog(i)}
                           className="flex gap-5 cursor-pointer group"
                           key={i}
                         >
-                          <div className="w-[44px] h-[44px] aspect-square rounded-xl border border-white/10 flexc justify-center shadow-[inset_0px_-3px_12px_1px_rgba(255,255,255,0.05)]">
+                          <div className="iconWrapper">
                             {IconLibrary[category.ic].i("w-[18px]")}
                           </div>
 
@@ -546,14 +544,11 @@ export default function Categories({
                                   .map(([key, value], i) => (
                                     <button
                                       key={i}
-                                      className="px-3 py-1.5 text-[13px] capitalize outline-none rounded-m border border-white/10 bg-white/5 relative group overflow-hidden shadow-ins2"
+                                      className="px-3 py-1.5 text-[13px] capitalize grayButton group shadow-ins2"
                                     >
-                                      {key}:
-                                      <span className="opacity-80">
-                                        {" "}
-                                        {value as string}
-                                      </span>
-                                      <span className="absolute inset-0 bg-gradient-to-t group-hover:opacity-50 opacity-0 transition-all duration-300 from-white/10 via-white/5 to-white/[0.02]" />
+                                      {key}:{" "}
+                                      <p className="opacity-70">{value}</p>
+                                      <span className="group-hover:opacity-50" />
                                     </button>
                                   ))}
                             </div>
@@ -692,6 +687,127 @@ export default function Categories({
             </div>
           </div>
         </div>
+
+        <Dialog.Root
+          onOpenChange={() => setOpenEventDialog(-1)}
+          open={openEventDialog > -1}
+        >
+          {openEventDialog > -1 && (
+            <Dialog.Content
+              style={{
+                borderRadius: "24px",
+              }}
+            >
+              <div className="flex items-end justify-between w-full border-b border-white/10 pb-3 mb-4">
+                <div>
+                  <p className="text-[17px] font-[550] tracking-tight">
+                    {eventsList[openEventDialog].en}
+                  </p>
+                  <p className="opacity-80 text-sm mt-0.5 tracking-sm">
+                    {formatDate(eventsList[openEventDialog].ed.toString())}
+                  </p>
+                </div>
+
+                <div className="flexc gap-1.5 opacity-75">
+                  {IconLibrary[category.ic].i("w-4")}
+                  <p className="text-sm">{category.n}</p>
+                </div>
+              </div>
+
+              <p className="text-sm">
+                {eventsList[openEventDialog].edes ||
+                  "No short description provided."}
+              </p>
+
+              <div className="flexc justify-between mt-10">
+                <div className="flexc gap-2 ">
+                  {eventsList[openEventDialog].et &&
+                    Object.entries(eventsList[openEventDialog].et!)
+                      .slice(0, 3)
+                      .map(([key, value], i) => (
+                        <button
+                          key={i}
+                          className="px-3 py-1.5 text-[13px] capitalize grayButton group shadow-ins2"
+                        >
+                          {key}: <p className="opacity-70">{value}</p>
+                          <span className="group-hover:opacity-50" />
+                        </button>
+                      ))}
+                </div>
+
+                <Dialog.Root>
+                  <Dialog.Trigger>
+                    <button className="grayButton py-1.5 px-2 aspect-square group">
+                      <TrashIcon className="w-4" />
+                      <span className="group-hover:opacity-60" />
+                    </button>
+                  </Dialog.Trigger>
+
+                  <Dialog.Content
+                    style={{
+                      maxWidth: "400px",
+                      background: "#151515",
+                      borderRadius: "24px",
+                    }}
+                  >
+                    <h4 className="">Delete Event</h4>
+                    <p className="text-sm opacity-75 mt-1.5">
+                      Are you sure you want to delete this event?
+                      <br />
+                      This action cannot be undone.
+                    </p>
+                    <div className="flexc gap-3 justify-end mt-5">
+                      <Dialog.Close>
+                        <button className={`grayButton md group outline-none`}>
+                          Cancel
+                          <span className="group-hover:opacity-60" />
+                        </button>
+                      </Dialog.Close>
+
+                      <Dialog.Close>
+                        <button
+                          onClick={() => {
+                            toast.promise(deleteEvent, {
+                              loading: "Loading...",
+                              success: "Event deleted!",
+                              error: "Error occurred. Try again!",
+                            });
+
+                            async function deleteEvent() {
+                              try {
+                                const conn = await connect(config);
+                                await conn.execute(
+                                  `delete from events where eid = ${eventsList[openEventDialog].eid}`
+                                );
+
+                                setOpenEventDialog(-1);
+
+                                setEventsList((prevList) =>
+                                  prevList.filter(
+                                    (event) =>
+                                      event.eid !=
+                                      eventsList[openEventDialog].eid
+                                  )
+                                );
+                              } catch (error) {}
+                            }
+                          }}
+                          className="px-5 py-[7px] text-[14px] rounded-m border text-white bg-red-500 border-red-400 flexc gap-1.5 transition-all duration-200 hover:opacity-75 active:scale-95"
+                        >
+                          <TrashIcon
+                            strokeWidth={1.3}
+                            className="w-4 -ml-0.5 -translate-y-[0.5px]"
+                          />
+                          Delete
+                        </button>
+                      </Dialog.Close>
+                    </div>
+                  </Dialog.Content>
+                </Dialog.Root>
+              </div>
+            </Dialog.Content>
+          )}
+        </Dialog.Root>
       </div>
     </main>
   );

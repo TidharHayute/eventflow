@@ -473,23 +473,22 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 
   let lastEventData;
   if (categoriesData.rows.length > 0) {
-    lastEventData = await conn.execute(`
-    SELECT e1.ec, e1.en, COUNT(e2.ec) AS last24
+    lastEventData =
+      await conn.execute(`SELECT e1.ec, e1.en, COUNT(e2.ec) AS last24
     FROM events e1
-    LEFT JOIN events e2 ON e1.ec = e2.ec
-    WHERE e1.ec IN(${categoriesData.rows.map((obj: any) => obj.id).join(", ")})
-    AND (e1.ec, e1.ed) IN (
+    LEFT JOIN events e2 ON e1.ec = e2.ec AND e2.ed >= NOW() - INTERVAL 24 HOUR
+    WHERE e1.ec IN (${categoriesData.rows.map((obj: any) => obj.id).join(", ")})
+      AND (e1.ec, e1.ed) IN (
         SELECT ec, MAX(ed) AS max_ed
         FROM events
         WHERE ec IN (${categoriesData.rows
           .map((obj: any) => obj.id)
           .join(", ")})
         GROUP BY ec
-    )
-    AND e2.ed >= NOW() - INTERVAL 24 HOUR
+      )
     GROUP BY e1.ec, e1.en
-    ORDER BY e1.ec;
-    `);
+    ORDER BY e1.ec;    
+  `);
   }
 
   const favCategories = await supabase

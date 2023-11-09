@@ -6,18 +6,19 @@ import Head from "next/head";
 import Sidebar from "@/components/Sidebar";
 import DashboardHeader from "@/components/DashboardHeader";
 import {
-  BanknotesIcon,
   CheckCircleIcon,
-  CheckIcon,
   ChevronRightIcon,
   MagnifyingGlassIcon,
+  TrashIcon,
 } from "@heroicons/react/24/outline";
 
-import { DropdownMenu } from "@radix-ui/themes";
+import { Dialog, DropdownMenu } from "@radix-ui/themes";
 import { connect } from "@planetscale/database";
 import { config } from "@/utilities/supabaseClient";
 import { Category, Event } from "@/utilities/databaseTypes";
 import { IconLibrary } from "@/utilities/iconsLibrary";
+import { toast } from "sonner";
+import Link from "next/link";
 
 function formatDate(date: Date) {
   const day = date.getDate();
@@ -38,7 +39,7 @@ function formatDate(date: Date) {
     minute: "2-digit",
   });
 
-  const formattedDateTime = `${dayWithSuffix} ${month}, ${
+  const formattedDateTime = `${month} ${dayWithSuffix}, ${
     time.charAt(0) == "0" ? time.substring(1) : time
   }`;
 
@@ -80,31 +81,35 @@ export default function LatestEvents({
     }
   });
 
-  let eventsListFilter = eventsList
-    .map((e) => ({ ...e, ed: new Date(e.ed) }))
-    .sort((a, b) => b.ed.getTime() - a.ed.getTime())
-    .filter(
-      (e) =>
-        e.en.toLowerCase().includes(searchFilter.toLowerCase()) ||
-        e.edes?.toLowerCase().includes(searchFilter.toLowerCase())
-    )
-    .filter((e) =>
-      categoriesFilter.length > 0 ? categoriesFilter.includes(e.ec) : true
-    )
-    .filter((e) =>
-      Object.keys(tagsFilter).length > 0
-        ? Object.keys(tagsFilter).every((key) => {
-            if (e.et && typeof e.et === "object") {
-              const value = tagsFilter[key];
-              if (!e.et[key] || e.et[key] !== value) {
-                return false;
+  const [eventsListFilter, setEventsListFilter] = useState(
+    eventsList
+      .map((e) => ({ ...e, ed: new Date(e.ed) }))
+      .sort((a, b) => b.ed.getTime() - a.ed.getTime())
+      .filter(
+        (e) =>
+          e.en.toLowerCase().includes(searchFilter.toLowerCase()) ||
+          e.edes?.toLowerCase().includes(searchFilter.toLowerCase())
+      )
+      .filter((e) =>
+        categoriesFilter.length > 0 ? categoriesFilter.includes(e.ec) : true
+      )
+      .filter((e) =>
+        Object.keys(tagsFilter).length > 0
+          ? Object.keys(tagsFilter).every((key) => {
+              if (e.et && typeof e.et === "object") {
+                const value = tagsFilter[key];
+                if (!e.et[key] || e.et[key] !== value) {
+                  return false;
+                }
+                return true;
               }
-              return true;
-            }
-            return false;
-          })
-        : true
-    );
+              return false;
+            })
+          : true
+      )
+  );
+
+  const [openEventDialog, setOpenEventDialog] = useState(-1);
 
   return (
     <main className="dashboardParent">
@@ -434,8 +439,12 @@ export default function LatestEvents({
                   eventsListFilter
                     .slice(pagination * 25, (pagination + 1) * 25)
                     .map((it, i) => (
-                      <div className="flex gap-5 cursor-pointer group" key={i}>
-                        <div className="w-[44px] h-[44px] aspect-square rounded-xl border border-white/10 flexc justify-center shadow-[inset_0px_-3px_12px_1px_rgba(255,255,255,0.05)]">
+                      <div
+                        onClick={() => setOpenEventDialog(i)}
+                        className="flex gap-5 cursor-pointer group"
+                        key={i}
+                      >
+                        <div className="iconWrapper">
                           {categoriesData.find((c) => c.id == it.ec)
                             ? IconLibrary[
                                 categoriesData.find((c) => c.id == it.ec)!.ic
@@ -471,11 +480,10 @@ export default function LatestEvents({
                                 .map(([key, value], i) => (
                                   <button
                                     key={i}
-                                    className="px-3 py-1.5 text-[13px] capitalize outline-none rounded-m border border-white/10 bg-white/5 relative group overflow-hidden shadow-ins2"
+                                    className="px-3 py-1.5 text-[13px] capitalize grayButton group shadow-ins2"
                                   >
-                                    {key}:
-                                    <span className="opacity-80"> {value}</span>
-                                    <span className="absolute inset-0 bg-gradient-to-t group-hover:opacity-50 opacity-0 transition-all duration-300 from-white/10 via-white/5 to-white/[0.02]" />
+                                    {key}: <p className="opacity-70">{value}</p>
+                                    <span className="group-hover:opacity-50" />
                                   </button>
                                 ))}
                           </div>
@@ -533,6 +541,143 @@ export default function LatestEvents({
             </div>
           </div>
         </div>
+
+        <Dialog.Root
+          onOpenChange={() => setOpenEventDialog(-1)}
+          open={openEventDialog > -1}
+        >
+          {openEventDialog > -1 && (
+            <Dialog.Content
+              style={{
+                borderRadius: "24px",
+              }}
+            >
+              <div className="flex items-end justify-between w-full border-b border-white/10 pb-3 mb-4">
+                <div>
+                  <p className="text-[17px] font-[550] tracking-tight">
+                    {eventsListFilter[openEventDialog].en}
+                  </p>
+                  <p className="opacity-80 text-sm mt-0.5 tracking-sm">
+                    {formatDate(eventsListFilter[openEventDialog].ed)}
+                  </p>
+                </div>
+
+                <Link
+                  passHref
+                  href={`/category/${eventsListFilter[openEventDialog].ec}`}
+                  className="flexc gap-1.5 opacity-75 transition-all hover:opacity-100"
+                >
+                  {categoriesData.find(
+                    (c) => c.id == eventsListFilter[openEventDialog].ec
+                  )
+                    ? IconLibrary[
+                        categoriesData.find(
+                          (c) => c.id == eventsListFilter[openEventDialog].ec
+                        )!.ic
+                      ].i("w-[18px]")
+                    : IconLibrary[6].i("w-[18px] scale-y-90")}
+                  <p className="text-sm">
+                    {categoriesData.find(
+                      (c) => c.id == eventsListFilter[openEventDialog].ec
+                    )?.n || "No Category"}
+                  </p>
+                </Link>
+              </div>
+
+              <p className="text-sm">
+                {eventsListFilter[openEventDialog].edes ||
+                  "No short description provided."}
+              </p>
+
+              <div className="flexc justify-between mt-10">
+                <div className="flexc gap-2 ">
+                  {eventsListFilter[openEventDialog].et &&
+                    Object.entries(eventsListFilter[openEventDialog].et!)
+                      .slice(0, 3)
+                      .map(([key, value], i) => (
+                        <button
+                          key={i}
+                          className="px-3 py-1.5 text-[13px] capitalize grayButton group shadow-ins2"
+                        >
+                          {key}: <p className="opacity-70">{value}</p>
+                          <span className="group-hover:opacity-50" />
+                        </button>
+                      ))}
+                </div>
+
+                <Dialog.Root>
+                  <Dialog.Trigger>
+                    <button className="grayButton py-1.5 px-2 aspect-square group">
+                      <TrashIcon className="w-4" />
+                      <span className="group-hover:opacity-60" />
+                    </button>
+                  </Dialog.Trigger>
+
+                  <Dialog.Content
+                    style={{
+                      maxWidth: "400px",
+                      background: "#151515",
+                      borderRadius: "24px",
+                    }}
+                  >
+                    <h4 className="">Delete Event</h4>
+                    <p className="text-sm opacity-75 mt-1.5">
+                      Are you sure you want to delete this event?
+                      <br />
+                      This action cannot be undone.
+                    </p>
+                    <div className="flexc gap-3 justify-end mt-5">
+                      <Dialog.Close>
+                        <button className={`grayButton md group outline-none`}>
+                          Cancel
+                          <span className="group-hover:opacity-60" />
+                        </button>
+                      </Dialog.Close>
+
+                      <Dialog.Close>
+                        <button
+                          onClick={() => {
+                            toast.promise(deleteEvent, {
+                              loading: "Loading...",
+                              success: "Event deleted!",
+                              error: "Error occurred. Try again!",
+                            });
+
+                            async function deleteEvent() {
+                              try {
+                                const conn = await connect(config);
+                                await conn.execute(
+                                  `delete from events where eid = ${eventsListFilter[openEventDialog].eid}`
+                                );
+
+                                setOpenEventDialog(-1);
+
+                                setEventsListFilter((prevList) =>
+                                  prevList.filter(
+                                    (event) =>
+                                      event.eid !=
+                                      eventsListFilter[openEventDialog].eid
+                                  )
+                                );
+                              } catch (error) {}
+                            }
+                          }}
+                          className="px-5 py-[7px] text-[14px] rounded-m border text-white bg-red-500 border-red-400 flexc gap-1.5 transition-all duration-200 hover:opacity-75 active:scale-95"
+                        >
+                          <TrashIcon
+                            strokeWidth={1.3}
+                            className="w-4 -ml-0.5 -translate-y-[0.5px]"
+                          />
+                          Delete
+                        </button>
+                      </Dialog.Close>
+                    </div>
+                  </Dialog.Content>
+                </Dialog.Root>
+              </div>
+            </Dialog.Content>
+          )}
+        </Dialog.Root>
       </div>
     </main>
   );
