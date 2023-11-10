@@ -125,7 +125,7 @@ const keys = [
   },
 ];
 
-export default function LatestEvents({
+export default function Charts({
   user,
 
   categoriesData,

@@ -30,45 +30,49 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       }
 
       try {
-        if (req.body.tags) {
-          await conn.execute(
-            `insert into events(uid, en, edes, et, ec, ed) values(?,?,?,?,?,?)`,
-            [
-              userId,
-              req.body.title,
-              req.body.description ?? null,
-              JSON.stringify(req.body.tags),
-              req.body.category_id,
-              formattedDateForSQL(new Date()),
-            ]
-          );
-        } else {
-          await conn.execute(
-            `insert into events(uid, en, edes, ec, ed) values(?,?,?,?,?)`,
-            [
-              userId,
-              req.body.title,
-              req.body.description ?? null,
-              req.body.category_id,
-              formattedDateForSQL(new Date()),
-            ]
-          );
-        }
-
-        await conn.execute(
-          `UPDATE categories SET t = t + 1 WHERE id = ${req.body.category_id}`
-        );
-
-        await conn.execute(`UPDATE keys SET lu = ? WHERE id = '${keyToken}'`, [
-          formattedDateForSQL(new Date()),
-        ]);
-
-        const supa = await supabase.rpc("update_monthly_usage", {
+        const userLimit = await supabase.rpc("update_monthly_usage", {
           key: userId,
         });
-        console.log(supa, userId);
 
-        return res.status(200).json({ message: "Event recorded!" });
+        if (userLimit.data == 1) {
+          if (req.body.tags) {
+            await conn.execute(
+              `insert into events(uid, en, edes, et, ec, ed) values(?,?,?,?,?,?)`,
+              [
+                userId,
+                req.body.title,
+                req.body.description ?? null,
+                JSON.stringify(req.body.tags),
+                req.body.category_id,
+                formattedDateForSQL(new Date()),
+              ]
+            );
+          } else {
+            await conn.execute(
+              `insert into events(uid, en, edes, ec, ed) values(?,?,?,?,?)`,
+              [
+                userId,
+                req.body.title,
+                req.body.description ?? null,
+                req.body.category_id,
+                formattedDateForSQL(new Date()),
+              ]
+            );
+          }
+
+          await conn.execute(
+            `UPDATE categories SET t = t + 1 WHERE id = ${req.body.category_id}`
+          );
+
+          await conn.execute(
+            `UPDATE keys SET lu = ? WHERE id = '${keyToken}'`,
+            [formattedDateForSQL(new Date())]
+          );
+
+          return res.status(200).json({ message: "Event recorded!" });
+        } else {
+          res.status(401).json({ error: "Events limit exceeded" });
+        }
       } catch (error) {
         return res
           .status(500)

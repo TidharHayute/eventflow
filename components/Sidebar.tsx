@@ -119,7 +119,7 @@ const navList = [
 const navAccount = [
   {
     t: "Account",
-    l: "/account",
+    l: "/settings/account",
     ic: <UserCircleIcon className="w-[18px] stroke-white" />,
   },
   {
@@ -130,7 +130,7 @@ const navAccount = [
 
   {
     t: "Billing",
-    l: "/billing",
+    l: "/settings/billing",
     ic: <CreditCardIcon className="w-[18px] stroke-white" />,
   },
 ];
@@ -225,7 +225,7 @@ export default function Sidebar({
 
         <div
           ref={profileRef}
-          className={`absolute overflow-hidden z-10 inset-x-6 flex flex-col gap-2 top-[90px]  bg-[#090910] shadow-xl p-1.5  border border-white/10 rounded-[14px] transition-all duration-300 origin-center ${
+          className={`absolute overflow-hidden z-10 inset-x-6 flex flex-col gap-2 top-[90px] bg-[#0a0a12] shadow-xl p-1.5  border border-white/10 rounded-[14px] transition-all duration-300 origin-center ${
             openProfile
               ? `scale-100 translate-y-0 opacity-100 visible`
               : `scale-95 -translate-y-3 opacity-0 invisible`
@@ -346,27 +346,20 @@ export default function Sidebar({
         </div>
 
         <div>
-          {/* <div className="rounded-m cursor-pointer group border border-white/10 p-3 overflow-hidden bg-gradient-to-t from-white/[0.04] to-white/[0.025] relative flex items-center gap-2 shadow-[inset_-1px_-1px_30px_0px_rgba(255,255,255,0.1)]">
-            <SparklesIcon className="w-4" />
-            <p className="text-xs">Upgrade to Premium</p>
-            <div className="absolute group-hover:opacity-100 opacity-0 inset-0 z-[0] shadow-[inset_-2px_-2px_45px_0px_rgba(255,255,255,0.06)] transition-all duration-300" />
-          </div> */}
           <Link
-            href={"/account"}
+            href={"/settings/account"}
             passHref
             className={`hover:bg-white/5 text-white/60 border-white/0 px-3 py-2 relative w-full flex tracking-sm border items-center gap-2.5 rounded-m text-[14px] transition-all duration-200`}
           >
             <Cog8ToothIcon className="w-[18px]" />
             Settings
           </Link>
-          <Link
-            href={"/account"}
-            passHref
+          <button
             className={`hover:bg-white/5 text-white/60 border-white/0 px-3 py-2 relative w-full flex tracking-sm border items-center gap-2.5 rounded-m text-[14px] transition-all duration-200`}
           >
             <LifebuoyIcon className="w-[18px]" />
             Help & Support
-          </Link>
+          </button>
         </div>
       </div>
     </div>

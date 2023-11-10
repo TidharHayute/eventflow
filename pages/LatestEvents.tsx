@@ -1,7 +1,5 @@
-import { User, createPagesServerClient } from "@supabase/auth-helpers-nextjs";
-import { GetServerSidePropsContext } from "next";
-
-import { useEffect, useState } from "react";
+import { User } from "@supabase/auth-helpers-nextjs";
+import { useState } from "react";
 import Head from "next/head";
 import Sidebar from "@/components/Sidebar";
 import DashboardHeader from "@/components/DashboardHeader";
@@ -11,7 +9,6 @@ import {
   MagnifyingGlassIcon,
   TrashIcon,
 } from "@heroicons/react/24/outline";
-
 import { Dialog, DropdownMenu } from "@radix-ui/themes";
 import { connect } from "@planetscale/database";
 import { config } from "@/utilities/supabaseClient";
@@ -19,32 +16,7 @@ import { Category, Event } from "@/utilities/databaseTypes";
 import { IconLibrary } from "@/utilities/iconsLibrary";
 import { toast } from "sonner";
 import Link from "next/link";
-
-function formatDate(date: Date) {
-  const day = date.getDate();
-  const month = date.toLocaleString("default", { month: "long" });
-  const year = date.getFullYear();
-
-  const dayWithSuffix =
-    day +
-    (day % 10 === 1 && day !== 11
-      ? "st"
-      : day % 10 === 2 && day !== 12
-      ? "nd"
-      : day % 10 === 3 && day !== 13
-      ? "rd"
-      : "th");
-  const time = date.toLocaleTimeString([], {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-
-  const formattedDateTime = `${month} ${dayWithSuffix}, ${
-    time.charAt(0) == "0" ? time.substring(1) : time
-  }`;
-
-  return formattedDateTime;
-}
+import { formatDate } from "./events";
 
 export default function LatestEvents({
   user,
@@ -84,7 +56,7 @@ export default function LatestEvents({
   const [eventsListFilter, setEventsListFilter] = useState<Event[]>([]);
 
   useEffect(() => {
-    const sortedAndFilteredEvents: Event[] = eventsList
+    const sortedAndFilteredEvents = eventsList
       .map((e) => ({ ...e, ed: new Date(e.ed) }))
       .sort((a, b) =>
         sortBy
@@ -112,8 +84,7 @@ export default function LatestEvents({
               return false;
             })
           : true
-      )
-      .map((e) => ({ ...e, ed: e.ed.toLocaleString() }));
+      );
 
     setEventsListFilter(sortedAndFilteredEvents);
   }, [eventsList, sortBy, searchFilter, categoriesFilter, tagsFilter]);
@@ -494,7 +465,7 @@ export default function LatestEvents({
                               </p>
                               <p className="text-[13.5px] opacity-80">•</p>
                               <p className="text-[13.5px] opacity-80">
-                                {formatDate(new Date(it.ed))}
+                                {formatDate(it.ed)}
                               </p>
                             </div>
                           </div>
@@ -584,7 +555,7 @@ export default function LatestEvents({
                     {eventsListFilter[openEventDialog].en}
                   </p>
                   <p className="opacity-80 text-sm mt-0.5 tracking-sm">
-                    {formatDate(new Date(eventsListFilter[openEventDialog].ed))}
+                    {formatDate(eventsListFilter[openEventDialog].ed)}
                   </p>
                 </div>
 
@@ -678,13 +649,13 @@ export default function LatestEvents({
 
                                 setOpenEventDialog(-1);
 
-                                setEventsListFilter((prevList) =>
-                                  prevList.filter(
-                                    (event) =>
-                                      event.eid !=
-                                      eventsListFilter[openEventDialog].eid
-                                  )
-                                );
+                                // setEventsListFilter((prevList) =>
+                                //   prevList.filter(
+                                //     (event) =>
+                                //       event.eid !=
+                                //       eventsListFilter[openEventDialog].eid
+                                //   )
+                                // );
                               } catch (error) {}
                             }
                           }}
@@ -708,43 +679,3 @@ export default function LatestEvents({
     </main>
   );
 }
-
-export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  const supabase = createPagesServerClient(ctx);
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-
-  if (!session)
-    return {
-      redirect: {
-        destination: "/",
-        permanent: false,
-      },
-    };
-
-  const conn = connect(config);
-
-  const eventsList = await conn.execute(
-    `SELECT * FROM events WHERE ed > DATE_SUB(NOW(), INTERVAL 7 DAY) and uid = '${session.user.id}'`
-  );
-
-  const categoriesData = await conn.execute(
-    `select * from categories where uid = '${session.user.id}' `
-  );
-
-  const favCategories = await supabase
-    .from("users")
-    .select("fav_categories")
-    .eq("id", session.user.id);
-
-  return {
-    props: {
-      initialSession: session,
-      user: session.user,
-      eventsList: eventsList.rows,
-      categoriesData: categoriesData.rows,
-      favCategories: favCategories.data ?? null,
-    },
-  };
-};

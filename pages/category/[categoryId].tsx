@@ -118,7 +118,7 @@ const SourceData = [
   { name: "Pricing Page Visit", value: 94 },
 ];
 
-export default function Categories({
+export default function CategoryPage({
   user,
 
   categoriesData,

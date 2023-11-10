@@ -83,14 +83,14 @@ export default function DashboardHeader({ showBack }: { showBack?: string }) {
           </div>
         </div>
       </div>
-      <button className="grayButton xs group">
+      <Link passHref href={"/settings/account"} className="grayButton xs group">
         <UserCircleIcon
           strokeWidth={1.4}
           className="w-[18px] -ml-0.5 -translate-y-[0.5px]"
         />
         Account
         <span className="group-hover:opacity-60" />
-      </button>
+      </Link>
 
       <Link passHref href={"/keys?ref=API"} className="grayButton xs group">
         <CodeBracketIcon
