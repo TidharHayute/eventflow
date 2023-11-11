@@ -6,7 +6,7 @@ import Head from "next/head";
 import Sidebar from "@/components/Sidebar";
 import DashboardHeader from "@/components/DashboardHeader";
 import { connect } from "@planetscale/database";
-import { config } from "@/utilities/supabaseClient";
+import supabase, { config } from "@/utilities/supabaseClient";
 import { Category } from "@/utilities/databaseTypes";
 import {
   CreditCardIcon,
@@ -15,6 +15,7 @@ import {
   UsersIcon,
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
+import { toast } from "sonner";
 
 export default function Account({
   user,
@@ -97,6 +98,7 @@ export default function Account({
                     placeholder="Email"
                     value={user.email}
                     onChange={() => {}}
+                    disabled
                     type="email"
                     className="border focus:outline-none placeholder:text-[#757575] border-white/10 rounded-m px-3 py-2.5 text-sm w-full bg-white/5 mt-2 mb-4"
                   />
@@ -111,6 +113,7 @@ export default function Account({
                     value="·········"
                     onChange={() => {}}
                     type="password"
+                    disabled
                     className="border focus:outline-none placeholder:text-[#757575] border-white/10 rounded-m px-3 py-2.5 text-sm w-full bg-white/5 mt-2"
                   />
 
@@ -148,7 +151,30 @@ export default function Account({
                   </div>
 
                   <div className="flex justify-end mt-1">
-                    <button className="px-5 py-2 text-[14px] rounded-m border text-black border-white bg-white flexc gap-1.5 transition-all duration-300 hover:opacity-75">
+                    <button
+                      onClick={() => {
+                        const profileObject = { fn: firstName, ln: lastName };
+
+                        async function updateProfile() {
+                          const { data, error } = await supabase
+                            .from("users")
+                            .update({ account: profileObject })
+                            .eq("id", user.id);
+
+                          if (error) {
+                            console.log(error);
+                            throw error;
+                          }
+                        }
+
+                        toast.promise(updateProfile, {
+                          loading: "Loading...",
+                          success: "Account Saved",
+                          error: "Failed to update account.",
+                        });
+                      }}
+                      className="px-5 py-2 text-[14px] active:scale-95 rounded-m border text-black border-white bg-white flexc gap-1.5 transition-all duration-300 hover:opacity-75"
+                    >
                       Save
                     </button>
                   </div>

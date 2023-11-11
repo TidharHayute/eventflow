@@ -103,21 +103,6 @@ function formatDate(dateString: string) {
   return formattedDateTime;
 }
 
-const UsersCharts = [
-  { date: "Oct 19", Users: 180 },
-  { date: "Oct 20", Users: 195 },
-  { date: "Oct 21", Users: 210 },
-  { date: "Oct 22", Users: 165 },
-  { date: "Oct 23", Users: 180 },
-  { date: "Oct 24", Users: 155 },
-  { date: "Oct 25", Users: 225 },
-];
-
-const SourceData = [
-  { name: "Home Page Visit", value: 124 },
-  { name: "Pricing Page Visit", value: 94 },
-];
-
 export default function CategoryPage({
   user,
 
@@ -621,8 +606,8 @@ export default function CategoryPage({
                   <div className="flex gap-10 p-4 h-52">
                     <AreaChart
                       className="h-44 mt-2 w-full"
-                      data={UsersCharts}
-                      categories={["Users"]}
+                      data={eventsPerDay}
+                      categories={["Events"]}
                       showYAxis={false}
                       showAnimation
                       index="date"
@@ -675,7 +660,7 @@ export default function CategoryPage({
                   <div className="flexc flex-col p-4 h-52 overflow-hidden">
                     <BarList
                       className="h-full mt-1 w-full"
-                      data={SourceData}
+                      data={topEvents}
                       showAnimation
                     />
                     {topEvents.length == 0 && (
