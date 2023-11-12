@@ -23,7 +23,6 @@ import Link from "next/link";
 function formatDate(date: Date) {
   const day = date.getDate();
   const month = date.toLocaleString("default", { month: "long" });
-  const year = date.getFullYear();
 
   const dayWithSuffix =
     day +
@@ -742,8 +741,8 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     props: {
       initialSession: session,
       user: session.user,
-      eventsList: eventsList.rows,
-      categoriesData: categoriesData.rows,
+      eventsList: eventsList.rows ?? null,
+      categoriesData: categoriesData.rows ?? null,
       favCategories: favCategories.data ?? null,
     },
   };

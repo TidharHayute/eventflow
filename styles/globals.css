@@ -152,6 +152,14 @@
   .iconWrapper {
     @apply w-[44px] h-[44px] aspect-square rounded-xl border border-white/10 flexc justify-center shadow-[inset_0px_-3px_12px_1px_rgba(255,255,255,0.05)];
   }
+
+  .iconWrapperCircle {
+    @apply w-10 h-10 rounded-3xl border border-white/10 flexc justify-center shadow-[inset_0px_-3px_10px_1px_rgba(255,255,255,0.16)];
+  }
+
+  .overviewItemContainer {
+    @apply p-2.5 border flexc gap-2 bg-white/[0.035] hover:bg-white/[0.04] transition-all duration-[250ms] border-white/10 rounded-2xl;
+  }
 }
 
 body {

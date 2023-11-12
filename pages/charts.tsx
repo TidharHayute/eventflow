@@ -46,14 +46,14 @@ const UsersCharts = [
   { date: "Oct 25", Users: 225 },
 ];
 
-const SourceData = [
+const TopEvents = [
   { name: "Stripe: Payment Succeded", value: 324 },
   { name: "New File Uploaded", value: 267 },
   { name: "Subscription Canceled", value: 245 },
   { name: "User Activated", value: 159 },
 ];
 
-const chartdata2 = [
+const ErrorsData = [
   {
     name: "Errors",
     "Error 403": 590,
@@ -349,7 +349,7 @@ export default function Charts({
                   <div className="flexc flex-col text-[#ffffffba] justify-center p-4 h-56 overflow-hidden">
                     <BarList
                       className="h-52 mt-1 w-full"
-                      data={SourceData}
+                      data={TopEvents}
                       showAnimation
                     />
                   </div>
@@ -387,7 +387,7 @@ export default function Charts({
                       valueFormatter={(number) =>
                         new Intl.NumberFormat("us").format(number).toString()
                       }
-                      data={chartdata2}
+                      data={ErrorsData}
                     />
                   </div>
                 </div>

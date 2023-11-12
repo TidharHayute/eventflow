@@ -80,7 +80,6 @@ function formatDate(dateString: string) {
 
   const day = date.getDate();
   const month = date.toLocaleString("default", { month: "long" });
-  const year = date.getFullYear();
 
   const dayWithSuffix =
     day +
@@ -515,11 +514,10 @@ export default function CategoryPage({
                                   className="w-3.5 transition-all duration-200 opacity-0 group-hover:opacity-100 -translate-x-1 group-hover:translate-x-0 scale-y-90"
                                 />
                               </p>
-                              <div className="flexc gap-2 mt-0.5">
-                                <p className="text-[13.5px] opacity-80">
-                                  {formatDate(it.ed.toString())}
-                                </p>
-                              </div>
+
+                              <p className="text-[13.5px] opacity-80 mt-0.5">
+                                {formatDate(it.ed.toString())}
+                              </p>
                             </div>
 
                             <div className="flexc gap-2">

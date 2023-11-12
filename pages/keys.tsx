@@ -142,7 +142,7 @@ export default function Keys({
                       keysList.map((it, i) => (
                         <tr key={i} className="p-3.5 border-b border-white/10">
                           <td className="flexc gap-3.5">
-                            <div className="w-10 h-10 rounded-3xl border border-white/10 flexc justify-center shadow-[inset_0px_-3px_8px_1px_rgba(255,255,255,0.18)]">
+                            <div className="iconWrapperCircle">
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 className="w-5 stroke-white -translate-y-[0.5px]"

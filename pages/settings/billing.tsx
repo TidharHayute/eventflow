@@ -210,9 +210,7 @@ export default function Billing({
                 </div>
               </div>
 
-              <div className="mt-12">
-                <h4>Billing History</h4>
-              </div>
+              <h4 className="mt-12">Billing History</h4>
 
               <div className="mt-5">
                 <table className="w-full">
@@ -280,7 +278,7 @@ function InvoiceItem({ invoice }: { invoice: Invoice }) {
   return (
     <tr className="p-3.5 border-b border-white/10 grid-cols-[2.5fr_1.5fr_1fr_0.75fr]">
       <td className="flexc gap-3.5">
-        <div className="w-10 h-10 rounded-3xl border border-white/10 flexc justify-center shadow-[inset_0px_-3px_10px_1px_rgba(255,255,255,0.15)]">
+        <div className="iconWrapperCircle">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="w-[17px] stroke-white -translate-y-[0.25px]"
