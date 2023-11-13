@@ -20,14 +20,14 @@
 
 @layer components {
   .navList {
-    @apply flex items-center gap-3;
+    @apply flex items-center gap-2;
   }
   .navList li a {
     @apply font-inter font-medium text-sm px-3.5 py-2 transition-all duration-300 tracking-[0.01em] hover:text-white relative;
   }
 
   button.field {
-    @apply border-white/[0.20] bg-white/5 hover:bg-white/[0.075] transition-all tracking-[-0.01em] duration-200 px-3 py-[9px] border rounded-m text-[14px] font-[600] flex items-center justify-center gap-1.5;
+    @apply border-white/[0.20] bg-white/5 transition-all tracking-[-0.01em] duration-200 px-3 py-[9px] border rounded-m text-[14px] font-[600] flex items-center justify-center gap-1.5;
   }
   input.field {
     /* @apply focus:outline-none px-3 py-2 border border-[#40444e] bg-[#16181f] rounded-m; */

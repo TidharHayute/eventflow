@@ -20,9 +20,9 @@ const navList = [
 export default function Header({ current }: { current: string }) {
   return (
     <main>
-      <nav className="max-w-7xl py-4 px-4 grid items-center grid-cols-[1fr_2fr_1fr] mx-auto border-b-[0.5px] [border-image:linear-gradient(to_right,rgba(255,255,255,0),rgba(255,255,255,0.2),rgba(255,255,255,0))_1]">
+      <nav className="max-w-7xl py-4 px-4 grid items-center grid-cols-[1fr_2fr_1fr] mx-auto">
         <Link href={"/"} passHref>
-          <Image src={Logo} alt="Logo" className="h-5 w-fit" />
+          <Image src={Logo} alt="Logo" className="h-[18px] w-fit" />
         </Link>
 
         <ul className="navList justify-center">
@@ -36,7 +36,7 @@ export default function Header({ current }: { current: string }) {
                 passHref
               >
                 {it.t}
-                <span className="absolute inset-0 bg-gradient-to-r group-hover:opacity-100 opacity-0 transition-all duration-300 from-white/10 to-white/5 border border-white/[0.15] rounded-3xl" />
+                <span className="absolute inset-0 bg-gradient-to-r group-hover:opacity-90 opacity-0 transition-all duration-[400ms] from-white/10 to-white/5 border border-white/[0.15] rounded-3xl" />
               </Link>
             </li>
           ))}
@@ -51,7 +51,7 @@ export default function Header({ current }: { current: string }) {
             passHref
           >
             Sign In
-            <span className="absolute inset-0 bg-gradient-to-r group-hover:opacity-100 opacity-0 transition-all duration-300 from-white/10 to-white/5 border border-white/[0.15] rounded-lg" />
+            <span className="absolute inset-0 bg-gradient-to-r group-hover:opacity-100 opacity-0 transition-all duration-300 from-white/10 to-white/5 border border-white/[0.15] rounded-3xl" />
           </Link>
 
           <Link
@@ -59,7 +59,7 @@ export default function Header({ current }: { current: string }) {
             href={"/register"}
             className="cursor-pointer group relative"
           >
-            <Button radius="large" size={"3"} variant="classic" color="teal">
+            <Button radius="full" size={"3"} variant="classic" color="blue">
               Get Started
               <AnimateArrow />
             </Button>

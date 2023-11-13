@@ -1,10 +1,17 @@
 import Header from "@/components/Header";
 import supabase from "@/utilities/supabaseClient";
-import { ArrowLongRightIcon } from "@heroicons/react/24/outline";
+import {
+  ArrowLongRightIcon,
+  UserCircleIcon,
+} from "@heroicons/react/24/outline";
 import { Button, Separator } from "@radix-ui/themes";
+import { createPagesServerClient } from "@supabase/auth-helpers-nextjs";
+import { GetServerSidePropsContext } from "next";
 import Head from "next/head";
 import Link from "next/link";
+import Router from "next/router";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export default function Register() {
   const [email, setEmail] = useState("");
@@ -109,16 +116,24 @@ export default function Register() {
         </div>
 
         <div className="grid grid-cols-2 gap-4 mt-7 w-md">
-          <button className="field">
-            <svg
-              className="w-4 fill-white"
-              viewBox="-2 -2 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-              preserveAspectRatio="xMinYMin"
-            >
-              <path d="M4.376 8.068A5.944 5.944 0 0 0 4.056 10c0 .734.132 1.437.376 2.086a5.946 5.946 0 0 0 8.57 3.045h.001a5.96 5.96 0 0 0 2.564-3.043H10.22V8.132h9.605a10.019 10.019 0 0 1-.044 3.956 9.998 9.998 0 0 1-3.52 5.71A9.958 9.958 0 0 1 10 20 9.998 9.998 0 0 1 1.118 5.401 9.998 9.998 0 0 1 10 0c2.426 0 4.651.864 6.383 2.302l-3.24 2.652a5.948 5.948 0 0 0-8.767 3.114z" />
-            </svg>
-            Register with Google
+          <button
+            onClick={async () => {
+              const { data, error } = await supabase.auth.signInWithPassword({
+                email: process.env.NEXT_PUBLIC_DEMO_USER!,
+                password: process.env.NEXT_PUBLIC_DEMO_PASS!,
+              });
+
+              if (error) {
+                toast.error("Error occurred. Please try again.");
+              } else {
+                Router.push("/overview");
+              }
+            }}
+            className="field relative group shadow-ins2"
+          >
+            <UserCircleIcon className="w-4 scale-105" />
+            Demo Account
+            <span className="absolute inset-0 bg-gradient-to-t opacity-0 transition-all duration-300 from-white/10 via-white/5 to-white/[0.02] group-hover:opacity-60" />
           </button>
 
           <button className="field">
@@ -137,3 +152,22 @@ export default function Register() {
     </main>
   );
 }
+
+export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
+  const supabase = createPagesServerClient(ctx);
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (session)
+    return {
+      redirect: {
+        destination: "/overview",
+        permanent: false,
+      },
+    };
+
+  return {
+    props: {},
+  };
+};

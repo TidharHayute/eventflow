@@ -8,10 +8,11 @@ export default function Home() {
       <div className="absolute inset-0 bgTealGradient z-[-1]" />
 
       <section className="fixHeight flex items-center justify-center">
-        <h1 className="font-uncut font-medium text-7xl tracking-tighter">
-          Email for
+        <p></p>
+        <h1 className="font-uncut text-center font-[550] text-6xl tracking-[-0.035em]">
+          Events tracking tool
           <br />
-          developers
+          for your business
         </h1>
       </section>
     </main>

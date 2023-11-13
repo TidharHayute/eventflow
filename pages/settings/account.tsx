@@ -9,6 +9,7 @@ import { connect } from "@planetscale/database";
 import supabase, { config } from "@/utilities/supabaseClient";
 import { Category } from "@/utilities/databaseTypes";
 import {
+  ArrowUpRightIcon,
   CreditCardIcon,
   LifebuoyIcon,
   UserCircleIcon,
@@ -16,6 +17,7 @@ import {
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { toast } from "sonner";
+import Router from "next/router";
 
 export default function Account({
   user,
@@ -189,8 +191,27 @@ export default function Account({
                       </p>
                     </div>
 
-                    <button className="px-5 py-[7px] text-[14px] rounded-m border text-white bg-red-500 border-red-400 flexc gap-1.5 transition-all duration-200 hover:opacity-75 active:scale-95">
+                    <button className="px-5 py-[7px] text-[14px] rounded-m border text-white bg-red-500 border-red-400 transition-all duration-200 hover:opacity-75 active:scale-95">
                       Delete Account
+                    </button>
+                  </div>
+
+                  <div className="flexc justify-end mt-5">
+                    <button
+                      onClick={async () => {
+                        const { error } = await supabase.auth.signOut();
+                        if (!error) {
+                          Router.push("/");
+                        }
+                      }}
+                      className="px-5 py-[7px] text-[14px] shadow-ins2 rounded-m border text-white bg-white/[0.025] border-white/10 flexc gap-2 transition-all duration-200 overflow-hidden active:scale-95 relative group"
+                    >
+                      Log Out
+                      <ArrowUpRightIcon
+                        className="w-[13px] -mr-[3px]"
+                        strokeWidth={1.8}
+                      />{" "}
+                      <span className="absolute inset-0 bg-gradient-to-t opacity-0 transition-all duration-300 from-white/10 via-white/5 to-white/[0.02] group-hover:opacity-60" />
                     </button>
                   </div>
                 </div>
