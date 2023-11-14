@@ -220,7 +220,7 @@ export default function Sidebar({
           onClick={() => setOpenProfile(!openProfile)}
           className="text-[12px] uppercase leading-[0.5] flex items-center justify-center h-[39px] w-[39px] overflow-hidden cursor-pointer tracking-wider rounded-3xl border shadow-sm border-white/10 bg-gradient-to-t from-white/[0.065] to-white/[0.025] relative group"
         >
-          {"mk" || uI.email.substring(0, 2)}{" "}
+          {uI.email.substring(0, 2)}{" "}
           <span className="inset-0 absolute opacity-0 group-hover:opacity-70 bg-gradient-to-t from-white/5 to-transparent transition-all duration-300" />
         </p>
 
