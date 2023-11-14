@@ -1,9 +1,8 @@
 import { LoaderCustom } from "@/components/Animation";
 import Header from "@/components/Header";
 import supabase from "@/utilities/supabaseClient";
-import { ArrowLongRightIcon } from "@heroicons/react/24/outline";
-import { UserCircleIcon } from "@heroicons/react/24/solid";
-import { Button, Separator } from "@radix-ui/themes";
+import { UserCircleIcon } from "@heroicons/react/24/outline";
+import { Button } from "@radix-ui/themes";
 import { createPagesServerClient } from "@supabase/auth-helpers-nextjs";
 import { GetServerSidePropsContext } from "next";
 import Head from "next/head";

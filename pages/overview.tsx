@@ -613,7 +613,7 @@ export default function Overview({
                       .map(([key, value], i) => (
                         <button
                           key={i}
-                          className="px-3 py-1.5 text-[13px] capitalize grayButton group shadow-ins2"
+                          className="px-3 py-1.5 text-[13px] capitalize grayButton group shadow-ins2 outline-none"
                         >
                           {key}: <p className="opacity-70">{value}</p>
                           <span className="group-hover:opacity-50" />
@@ -623,7 +623,7 @@ export default function Overview({
 
                 <Dialog.Root>
                   <Dialog.Trigger>
-                    <button className="grayButton py-1.5 px-2 aspect-square group">
+                    <button className="grayButton py-1.5 px-2 aspect-square group outline-none">
                       <TrashIcon className="w-4" />
                       <span className="group-hover:opacity-60" />
                     </button>
@@ -719,7 +719,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   );
 
   const eventsList = await conn.execute(
-    `SELECT * FROM events WHERE uid = '${session.user.id}' LIMIT 100`
+    `SELECT * FROM events WHERE ed > DATE_SUB(NOW(), INTERVAL 7 DAY) and uid = '${session.user.id}' LIMIT 100`
   );
 
   const favCategories = await supabase

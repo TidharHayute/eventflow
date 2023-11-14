@@ -35,6 +35,16 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         });
 
         if (userLimit.data == 1) {
+          const checkKeyRelation = await conn.execute(
+            `select n from categories where id = '${req.body.category_id}' and uid ='${userId}'`
+          );
+
+          if (checkKeyRelation.rows.length == 0) {
+            return res
+              .status(403)
+              .json({ message: "You don't have access to this category!" });
+          }
+
           if (req.body.tags) {
             await conn.execute(
               `insert into events(uid, en, edes, et, ec, ed) values(?,?,?,?,?,?)`,

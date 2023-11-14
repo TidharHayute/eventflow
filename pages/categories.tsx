@@ -210,8 +210,10 @@ export default function Categories({
                               <div className="w-1 h-1 rounded-lg bg-emerald-200" />
                               <div className="w-1.5 h-1.5 rounded-lg bg-emerald-200/80 absolute z-[-1] animate-pingslow" />
                             </div>
-                            {lastEvents.find((event) => event.ec === it.id)
-                              ?.en || "No events recorded yet."}
+                            {lastEvents
+                              ? lastEvents.find((event) => event.ec === it.id)
+                                  ?.en || "No events recorded yet."
+                              : "No events recorded yet."}
                           </td>
 
                           <td className="flexc gap-2 w-fit shadow-[inset_0px_-3px_8px_3px_rgba(110,231,183,0.05)] text-sm rounded-3xl border text-emerald-200 border-emerald-200/10 px-2.5 py-1">
@@ -229,8 +231,10 @@ export default function Categories({
                               />
                             </svg>
 
-                            {lastEvents.find((event) => event.ec === it.id)
-                              ?.last24 || "0"}
+                            {lastEvents
+                              ? lastEvents.find((event) => event.ec === it.id)
+                                  ?.last24 || "0"
+                              : "0"}
                           </td>
 
                           <td className="flexc justify-between">
@@ -280,14 +284,14 @@ export default function Categories({
                         </tr>
                       ))
                     ) : (
-                      <div className="my-7">
+                      <tr className="my-7 flex flex-col">
                         <p className="text-center text-[15px] font-medium">
                           No categories found.
                         </p>
                         <p className="text-center text-[15px] opacity-75">
                           Click on Create Category first.
                         </p>
-                      </div>
+                      </tr>
                     )}
                   </tbody>
                 </table>
@@ -297,7 +301,7 @@ export default function Categories({
                     onClick={() => {
                       setOpenCreateCategory(!openCreateCategory);
                     }}
-                    className="grayButton sm group"
+                    className="grayButton sm group active:scale-95 transition-all duration-200"
                   >
                     <PlusIcon className="w-4 -ml-[3px] -translate-y-[0.2  5px]" />
                     Create Category
@@ -373,7 +377,7 @@ export default function Categories({
                                 });
                                 setOpenCategoryIcon(false);
                               }}
-                              className="aspect-square flexc justify-center border rounded-m border-white/10 bg-white/5 hover:bg-white/10 transition-all hover:-translate-y-0.5 hover:shadow-l duration-200"
+                              className="aspect-square flexc justify-center border rounded-m border-white/10 bg-white/5 hover:bg-white/10 transition-all hover:-translate-y-0.5 hover:shadow-l duration-200 active:scale-95"
                             >
                               {ic.i("w-[18px] stroke-white")}
                             </button>
@@ -420,23 +424,26 @@ export default function Categories({
                       </button>
                       <button
                         onClick={() => {
-                          if (
-                            categoriesList.some((c) => c.n == newCategory.name)
-                          ) {
-                            toast.error(
-                              "Category with the same name already exist."
-                            );
-                          } else {
-                            toast.promise(createCategory(), {
-                              loading: "Creating Category...",
-                              success: () => {
-                                return `Category was created`;
-                              },
-                              error: `Error creating Category.`,
-                            });
-                          }
+                          if (newCategory.name.length > 2)
+                            if (
+                              categoriesList.some(
+                                (c) => c.n == newCategory.name
+                              )
+                            ) {
+                              toast.error(
+                                "Category with the same name already exist."
+                              );
+                            } else {
+                              toast.promise(createCategory(), {
+                                loading: "Creating Category...",
+                                success: () => {
+                                  return `Category was created`;
+                                },
+                                error: `Error creating Category.`,
+                              });
+                            }
                         }}
-                        className="px-3.5 py-2 text-[14px] rounded-m border text-black border-white bg-white flexc gap-1.5 transition-all duration-300 hover:opacity-75"
+                        className="px-3.5 py-2 text-[14px] rounded-m border text-black border-white bg-white flexc gap-1.5 transition-all duration-300 hover:opacity-75 active:scale-90"
                       >
                         Create
                       </button>

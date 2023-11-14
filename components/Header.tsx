@@ -20,24 +20,21 @@ const navList = [
 export default function Header({ current }: { current: string }) {
   return (
     <main>
-      <nav className="max-w-7xl py-4 px-4 grid items-center grid-cols-[1fr_2fr_1fr] mx-auto">
-        <Link href={"/"} passHref>
+      <nav className="max-w-7xl py-5 px-5 grid items-center grid-cols-[1fr_2fr_1fr] mx-auto">
+        <Link href={"/login"} passHref>
           <Image src={Logo} alt="Logo" className="h-[18px] w-fit" />
         </Link>
 
         <ul className="navList justify-center">
           {navList.map((it, i) => (
-            <li key={i}>
-              <Link
-                className={`group ${
-                  current == it.t ? `text-white` : `text-gray-400`
-                }`}
-                href={it.l}
-                passHref
-              >
-                {it.t}
-                <span className="absolute inset-0 bg-gradient-to-r group-hover:opacity-90 opacity-0 transition-all duration-[400ms] from-white/10 to-white/5 border border-white/[0.15] rounded-3xl" />
-              </Link>
+            <li
+              className={`group ${
+                current == it.t ? `text-white` : `text-gray-400`
+              }`}
+              key={i}
+            >
+              {it.t}
+              <span className="absolute inset-0 bg-gradient-to-r group-hover:opacity-90 opacity-0 transition-all duration-[400ms] from-white/10 to-white/5 border border-white/[0.15] rounded-3xl" />
             </li>
           ))}
         </ul>
@@ -51,18 +48,16 @@ export default function Header({ current }: { current: string }) {
             passHref
           >
             Sign In
-            <span className="absolute inset-0 bg-gradient-to-r group-hover:opacity-100 opacity-0 transition-all duration-300 from-white/10 to-white/5 border border-white/[0.15] rounded-3xl" />
           </Link>
 
           <Link
             passHref
             href={"/register"}
-            className="cursor-pointer group relative"
+            className="cursor-pointer group relative px-4 py-2.5 bg-white text-black rounded-3xl flexc gap-[11px] text-sm font-medium transition-all duration-200 active:scale-90"
           >
-            <Button radius="full" size={"3"} variant="classic" color="blue">
-              Get Started
-              <AnimateArrow />
-            </Button>
+            <p className="mr-0.5 ml-px">Get Started</p>
+
+            <AnimateArrow c="black" />
           </Link>
         </div>
       </nav>

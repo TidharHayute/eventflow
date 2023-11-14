@@ -10,6 +10,7 @@ import {
   MagnifyingGlassIcon,
   PlusIcon,
   SparklesIcon,
+  StarIcon,
   UserCircleIcon,
 } from "@heroicons/react/24/outline";
 import { useEffect, useRef, useState } from "react";
@@ -145,8 +146,8 @@ export default function Sidebar({
   current: string;
   uI: any;
   uD?: any;
-  favCategories?: number[];
-  categoriesList?: Category[];
+  favCategories: number[];
+  categoriesList: Category[];
 }) {
   const searchRef = useRef<HTMLInputElement>(null);
 
@@ -225,13 +226,21 @@ export default function Sidebar({
 
         <div
           ref={profileRef}
-          className={`absolute overflow-hidden z-10 inset-x-6 flex flex-col gap-2 top-[90px] bg-[#0a0a12] shadow-xl p-1.5  border border-white/10 rounded-[14px] transition-all duration-300 origin-center ${
+          className={`absolute overflow-hidden z-10 inset-x-6 flex flex-col gap-2 top-[90px] bg-[#0a0a12] shadow-xl p-1.5 border border-white/10 rounded-[14px] transition-all duration-300 origin-center ${
             openProfile
               ? `scale-100 translate-y-0 opacity-100 visible`
               : `scale-95 -translate-y-3 opacity-0 invisible`
           }`}
         >
-          {" "}
+          <div className="p-2.5 flexc gap-3 max-[1400px]:hidden">
+            <p className="text-[12px] uppercase leading-[0.5] flex items-center justify-center h-[39px] w-[39px] overflow-hidden tracking-wider rounded-3xl border shadow-sm border-white/10 bg-gradient-to-t from-white/[0.065] to-white/[0.025] relative group">
+              {uI.email.substring(0, 2)}
+              <span className="inset-0 absolute opacity-0 group-hover:opacity-70 bg-gradient-to-t from-white/5 to-transparent transition-all duration-300" />
+            </p>
+
+            <p className="text-sm">{uI.email}</p>
+          </div>
+          <div className="w-full -scale-x-125 border-b  border-white/10 max-[1400px]:hidden" />
           {navAccount.map((it, i) => (
             <Link
               key={i}
@@ -318,30 +327,43 @@ export default function Sidebar({
           </div>
 
           <div className="h-[calc(100vh-58px-303px-173px-35px)] pt-2 pb-2.5 pl-2.5 overflow-y-auto">
-            {categoriesList
-              ?.filter((c) => favCategories?.includes(c.id))
-              .map((it, i) => (
-                <Link passHref href={`/category/${it.id}`} key={i} className="">
-                  <div className="flex items-center gap-2 px-2.5 py-2 mb-1.5 hover:bg-white/5 rounded-m transition-all">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="w-[18px] -translate-y-[0px] scale-x-95"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="1.25"
-                        d="m7 20 3-16m4 16 3-16m2.5 11h-16m17-6h-16"
-                      />
-                    </svg>
+            {favCategories ? (
+              categoriesList
+                ?.filter((c) => favCategories?.includes(c.id))
+                .map((it, i) => (
+                  <Link
+                    passHref
+                    href={`/category/${it.id}`}
+                    key={i}
+                    className=""
+                  >
+                    <div className="flex items-center gap-2 px-2.5 py-2 mb-1.5 hover:bg-white/5 rounded-m transition-all">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="w-[18px] -translate-y-[0px] scale-x-95"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke="currentColor"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="1.25"
+                          d="m7 20 3-16m4 16 3-16m2.5 11h-16m17-6h-16"
+                        />
+                      </svg>
 
-                    <p className="text-[14.5px] tracking-sm">{it.n}</p>
-                  </div>
-                </Link>
-              ))}
+                      <p className="text-[14.5px] tracking-sm">{it.n}</p>
+                    </div>
+                  </Link>
+                ))
+            ) : (
+              <p className="py-2 px-2.5 mb-1.5 text-sm flexc gap-1">
+                Click on{" "}
+                <StarIcon className="w-[15px] stroke-white" strokeWidth={1.7} />{" "}
+                to add favorites.
+              </p>
+            )}
           </div>
         </div>
 

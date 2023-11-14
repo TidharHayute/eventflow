@@ -1,20 +1,40 @@
 import Header from "@/components/Header";
+import { createPagesServerClient } from "@supabase/auth-helpers-nextjs";
+import { GetServerSidePropsContext } from "next";
+import Head from "next/head";
 
 export default function Home() {
   return (
-    <main className="relative">
+    <main className="relative h-screen">
+      <Head>
+        <title>Eventflow</title>
+      </Head>
+
       <Header current="Home" />
 
       <div className="absolute inset-0 bgTealGradient z-[-1]" />
-
-      <section className="fixHeight flex items-center justify-center">
-        <p></p>
-        <h1 className="font-uncut text-center font-[550] text-6xl tracking-[-0.035em]">
-          Events tracking tool
-          <br />
-          for your business
-        </h1>
-      </section>
     </main>
   );
 }
+
+export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
+  const supabase = createPagesServerClient(ctx);
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (session)
+    return {
+      redirect: {
+        destination: "/overview",
+        permanent: false,
+      },
+    };
+
+  return {
+    redirect: {
+      destination: "/login  ",
+      permanent: false,
+    },
+  };
+};

@@ -38,7 +38,7 @@ function calculateEventsPerDay(events: Event[]) {
   }
 
   const eventCounts: Record<string, number> = {};
-  const topEvents: Record<string, number> = {}; // Object to store event counts by name
+  const topEvents: Record<string, number> = {};
 
   events.forEach((event) => {
     const eventDate = new Date(event.ed).toLocaleString("default", {
@@ -104,7 +104,6 @@ function formatDate(dateString: string) {
 
 export default function CategoryPage({
   user,
-
   categoriesData,
   categoryEvents,
   favCategories,
@@ -135,7 +134,7 @@ export default function CategoryPage({
   const [expandList, setExpandList] = useState(categoryEvents.length < 6);
 
   const [favoriteCategories, setFavoriteCategories] = useState<number[]>(
-    favCategories[0].fav_categories
+    favCategories[0].fav_categories ?? []
   );
 
   const eventsPerDay = calculateEventsPerDay(categoryEvents).EventsChart;
@@ -439,43 +438,52 @@ export default function CategoryPage({
                         </Dialog.Root>
 
                         <button
-                          onClick={async () => {
-                            if (favoriteCategories.includes(category.id)) {
-                              const updatedFavorites =
-                                favoriteCategories.filter(
-                                  (c) => c != category.id
-                                );
+                          onClick={() => {
+                            toast.promise(updateFavorite, {
+                              loading: "Loading...",
+                            });
 
-                              const { data, error } = await supabase
-                                .from("users")
-                                .update({ fav_categories: updatedFavorites })
-                                .eq("id", user.id);
+                            async function updateFavorite() {
+                              if (favoriteCategories.includes(category.id)) {
+                                const updatedFavorites =
+                                  favoriteCategories.filter(
+                                    (c) => c != category.id
+                                  );
 
-                              setFavoriteCategories(updatedFavorites);
-                            } else {
-                              const updatedFavorites = [
-                                ...favoriteCategories,
-                                category.id,
-                              ];
+                                const { data, error } = await supabase
+                                  .from("users")
+                                  .update({ fav_categories: updatedFavorites })
+                                  .eq("id", user.id);
 
-                              const { data, error } = await supabase
-                                .from("users")
-                                .update({ fav_categories: updatedFavorites })
-                                .eq("id", user.id);
+                                setFavoriteCategories(updatedFavorites);
+                              } else {
+                                const updatedFavorites = [
+                                  ...favoriteCategories,
+                                  category.id,
+                                ];
 
-                              setFavoriteCategories(updatedFavorites);
+                                const { data, error } = await supabase
+                                  .from("users")
+                                  .update({ fav_categories: updatedFavorites })
+                                  .eq("id", user.id);
+
+                                setFavoriteCategories(updatedFavorites);
+                              }
                             }
                           }}
                           className="flexc text-[15px] w-[150px] relative truncate gap-1.5 px-2.5 py-[7px] rounded-lg hover:bg-white/5 text-sm"
                         >
                           <StarIcon
                             className={`w-3.5 scale-105 -translate-y-px -ml-px ${
+                              favoriteCategories &&
                               favoriteCategories.includes(category.id) &&
                               `fill-white`
                             }`}
                           />
-                          {favoriteCategories.includes(category.id)
-                            ? `Unfavorite`
+                          {favoriteCategories
+                            ? favoriteCategories.includes(category.id)
+                              ? `Unfavorite`
+                              : `Favorite`
                             : `Favorite`}
                         </button>
                       </div>
@@ -710,7 +718,7 @@ export default function CategoryPage({
                       .map(([key, value], i) => (
                         <button
                           key={i}
-                          className="px-3 py-1.5 text-[13px] capitalize grayButton group shadow-ins2"
+                          className="px-3 py-1.5 text-[13px] capitalize grayButton group shadow-ins2 outline-none"
                         >
                           {key}: <p className="opacity-70">{value}</p>
                           <span className="group-hover:opacity-50" />
@@ -720,7 +728,7 @@ export default function CategoryPage({
 
                 <Dialog.Root>
                   <Dialog.Trigger>
-                    <button className="grayButton py-1.5 px-2 aspect-square group">
+                    <button className="grayButton py-1.5 px-2 aspect-square group outline-none">
                       <TrashIcon className="w-4" />
                       <span className="group-hover:opacity-60" />
                     </button>
@@ -819,7 +827,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   );
 
   const categoryEvents = await conn.execute(
-    `SELECT * FROM events WHERE ed > DATE_SUB(NOW(), INTERVAL 7 DAY) and ec = ${query.categoryId} and uid = '${session.user.id}'`
+    `SELECT * FROM events WHERE ec = ${query.categoryId} and uid = '${session.user.id}'`
   );
 
   const favCategories = await supabase

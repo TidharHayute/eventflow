@@ -22,8 +22,8 @@
   .navList {
     @apply flex items-center gap-2;
   }
-  .navList li a {
-    @apply font-inter font-medium text-sm px-3.5 py-2 transition-all duration-300 tracking-[0.01em] hover:text-white relative;
+  .navList li {
+    @apply font-inter cursor-pointer font-medium text-sm px-3.5 py-2 transition-all duration-300 tracking-[0.01em] hover:text-white relative;
   }
 
   button.field {
