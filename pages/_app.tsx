@@ -1,6 +1,6 @@
 import "@/styles/globals.css";
 import "@radix-ui/themes/styles.css";
-import "node_modules/@radix-ui/themes/theme-config.css";
+
 import type { AppProps } from "next/app";
 import { Theme } from "@radix-ui/themes";
 
