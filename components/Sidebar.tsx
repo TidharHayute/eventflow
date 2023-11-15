@@ -226,14 +226,14 @@ export default function Sidebar({
 
         <div
           ref={profileRef}
-          className={`absolute overflow-hidden z-10 inset-x-6 flex flex-col gap-2 top-[90px] bg-[#0a0a12] shadow-xl p-1.5 border border-white/10 rounded-[14px] transition-all duration-300 origin-center ${
+          className={`absolute overflow-hidden z-10 inset-x-6 flex flex-col gap-2 top-[87px] bg-[#0a0a12] shadow-xl p-1.5 border border-white/10 rounded-[14px] transition-all duration-300 origin-center ${
             openProfile
               ? `scale-100 translate-y-0 opacity-100 visible`
               : `scale-95 -translate-y-3 opacity-0 invisible`
           }`}
         >
-          <div className="p-2.5 flexc gap-3 max-[1400px]:hidden">
-            <p className="text-[12px] uppercase leading-[0.5] flex items-center justify-center h-[39px] w-[39px] overflow-hidden tracking-wider rounded-3xl border shadow-sm border-white/10 bg-gradient-to-t from-white/[0.065] to-white/[0.025] relative group">
+          <div className="p-2.5 flexc gap-2.5 max-[1400px]:hidden">
+            <p className="text-[11px] uppercase leading-[0.5] flex items-center justify-center h-9 w-9 overflow-hidden tracking-wider rounded-3xl border shadow-sm border-white/10 bg-gradient-to-t from-white/[0.065] to-white/[0.025] relative group">
               {uI.email.substring(0, 2)}
               <span className="inset-0 absolute opacity-0 group-hover:opacity-70 bg-gradient-to-t from-white/5 to-transparent transition-all duration-300" />
             </p>
