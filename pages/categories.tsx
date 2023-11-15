@@ -7,7 +7,6 @@ import Sidebar from "@/components/Sidebar";
 import DashboardHeader from "@/components/DashboardHeader";
 import {
   BanknotesIcon,
-  ChevronLeftIcon,
   ChevronRightIcon,
   ClipboardDocumentIcon,
   ExclamationTriangleIcon,
@@ -25,66 +24,6 @@ import { config } from "@/utilities/supabaseClient";
 import { Category } from "@/utilities/databaseTypes";
 import { toast } from "sonner";
 import Router from "next/router";
-
-const keys = [
-  {
-    ic: ({ cn }: { cn: string }) => (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        className={cn}
-        fill="none"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="1.25"
-          d="M11 15H7a4 4 0 0 0-4 4 2 2 0 0 0 2 2h10m3-3v-3m0 0v-3m0 3h-3m3 0h3m-6-8a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z"
-        />
-      </svg>
-    ),
-    n: "Sign-Ups",
-    p: "New Registration: name@email.com",
-    ld: 207,
-    at: 4618,
-  },
-  {
-    ic: ({ cn }: { cn: string }) => (
-      <ExclamationTriangleIcon strokeWidth={1.25} className={cn} />
-    ),
-    n: "Errors",
-    p: "User Request Error 403",
-    ld: 13,
-    at: 216,
-  },
-  {
-    ic: ({ cn }: { cn: string }) => (
-      <SignalIcon strokeWidth={1.25} className={cn} />
-    ),
-    n: "Webhooks",
-    p: "Slack Notification Triggered",
-    ld: 87,
-    at: 2186,
-  },
-  {
-    ic: ({ cn }: { cn: string }) => (
-      <BanknotesIcon strokeWidth={1.25} className={cn} />
-    ),
-    n: "Payments",
-    p: "Stripe: Payment Succeded",
-    ld: 39,
-    at: 1074,
-  },
-  {
-    ic: ({ cn }: { cn: string }) => (
-      <LifebuoyIcon strokeWidth={1.25} className={cn} />
-    ),
-    n: "Support",
-    p: "Technical Support Ticket: #127482",
-    ld: 15,
-    at: 593,
-  },
-];
 
 export default function Categories({
   user,

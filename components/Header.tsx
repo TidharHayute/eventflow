@@ -1,27 +1,26 @@
-"use client";
-
 import Link from "next/link";
 import Image from "next/image";
-
-import { Button, HoverCard, Kbd, Text } from "@radix-ui/themes";
-import { ChevronRightIcon } from "@heroicons/react/24/outline";
 
 import Logo from "public/Logo.png";
 import { AnimateArrow } from "./Animation";
 
 const navList = [
-  { t: "Home", l: "/" },
-  { t: "About", l: "/about" },
-  { t: "Features", l: "/" },
-  { t: "Pricing", l: "/pricing" },
-  { t: "Blog", l: "/blog" },
+  { t: "Home", l: "#" },
+  { t: "About", l: "#" },
+  { t: "Features", l: "#" },
+  { t: "Pricing", l: "#" },
+  { t: "Open Source", l: "https://github.com/TidharHayute/eventflow" },
 ];
 
 export default function Header({ current }: { current: string }) {
   return (
     <main>
-      <nav className="max-w-7xl py-5 px-5 grid items-center grid-cols-[1fr_2fr_1fr] mx-auto">
-        <Link href={"/login"} passHref>
+      <nav className="max-w-7xl py-5 px-5 grid items-center grid-cols-[1fr_2fr_1fr] max-[930px]:grid-cols-[1fr_1fr] mx-auto">
+        <Link
+          target="_blank"
+          href={"https://github.com/TidharHayute/eventflow"}
+          passHref
+        >
           <Image src={Logo} alt="Logo" className="h-[18px] w-fit" />
         </Link>
 
@@ -33,8 +32,10 @@ export default function Header({ current }: { current: string }) {
               }`}
               key={i}
             >
-              {it.t}
-              <span className="absolute inset-0 bg-gradient-to-r group-hover:opacity-90 opacity-0 transition-all duration-[400ms] from-white/10 to-white/5 border border-white/[0.15] rounded-3xl" />
+              <Link href={it.l} passHref>
+                {it.t}
+                <span className="absolute inset-0 bg-gradient-to-r group-hover:opacity-90 opacity-0 transition-all duration-[400ms] from-white/10 to-white/5 border border-white/[0.15] rounded-3xl" />
+              </Link>
             </li>
           ))}
         </ul>

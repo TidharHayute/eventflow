@@ -20,7 +20,7 @@
 
 @layer components {
   .navList {
-    @apply flex items-center gap-2;
+    @apply flex items-center gap-2 max-[930px]:hidden;
   }
   .navList li {
     @apply font-inter cursor-pointer font-medium text-sm px-3.5 py-2 transition-all duration-300 tracking-[0.01em] hover:text-white relative;
@@ -133,7 +133,7 @@
   }
 
   .grayButton {
-    @apply text-[14px] rounded-m border border-white/10 bg-white/5 flexc gap-1.5 relative overflow-hidden;
+    @apply text-[14px] rounded-m border border-white/10 bg-white/5 flexc gap-1.5 relative overflow-hidden transition-all duration-200 active:scale-95;
   }
   .grayButton span {
     @apply absolute inset-0 bg-gradient-to-t opacity-0 transition-all duration-300 from-white/10 via-white/5 to-white/[0.02];
@@ -159,6 +159,29 @@
 
   .overviewItemContainer {
     @apply p-2.5 border flexc gap-2 bg-white/[0.035] hover:bg-white/[0.04] transition-all duration-[250ms] border-white/10 rounded-2xl;
+  }
+
+  .hover-underline-animation {
+    @apply cursor-pointer relative inline-block;
+  }
+
+  .hover-underline-animation::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    transform: scaleX(0);
+    height: 1px;
+    bottom: 0;
+    left: 0;
+    background-image: linear-gradient(90deg, white 0%, white 100%);
+
+    transform-origin: bottom right;
+    transition: transform 0.3s ease-in-out;
+  }
+
+  .hover-underline-animation:hover::after {
+    transform: scaleX(1);
+    transform-origin: bottom left;
   }
 }
 

@@ -1,14 +1,12 @@
 import { User, createPagesServerClient } from "@supabase/auth-helpers-nextjs";
 import { GetServerSidePropsContext } from "next";
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import Head from "next/head";
 import Sidebar from "@/components/Sidebar";
 import Link from "next/link";
 import { CheckCircleIcon } from "@heroicons/react/24/solid";
-import { Kbd } from "@radix-ui/themes";
-import { AnimateArrow } from "@/components/Animation";
-import { HashtagIcon, SignalIcon } from "@heroicons/react/24/outline";
+import { HashtagIcon } from "@heroicons/react/24/outline";
 import DashboardHeader from "@/components/DashboardHeader";
 import { connect } from "@planetscale/database";
 import { config } from "@/utilities/supabaseClient";
@@ -142,7 +140,7 @@ export default function Setup({
                         } text-sm font-medium tracking-sm px-[17px] active:scale-95 relative group py-[9.2px] transition-all border rounded-lg overflow-hidden duration-200 flexc gap-1.5`}
                       >
                         <CheckCircleIcon className="w-[17px] -ml-0.5" />
-                        Complete{current > 0 && `d`} Mission
+                        {current > 0 ? `Completed Mission` : `Next Step`}
                       </button>
                     </div>
 
@@ -224,7 +222,7 @@ export default function Setup({
                         } text-sm font-medium tracking-sm px-[17px] active:scale-95 relative group py-[9.2px] transition-all border rounded-lg overflow-hidden duration-200 flexc gap-1.5`}
                       >
                         <CheckCircleIcon className="w-[17px] -ml-0.5" />
-                        Complete{current > 1 && `d`} Mission
+                        {current > 1 ? `Completed Mission` : `Next Step`}
                       </button>
                     </div>
 
@@ -328,7 +326,6 @@ export default function Setup({
                       </button>
 
                       <Link
-                        target="_blank"
                         className={`${
                           current > 2
                             ? `translate-y-0 opacity-100 visible`
@@ -350,7 +347,7 @@ export default function Setup({
                             d="M12 2v4m0 12v4M6 12H2m20 0h-4m1.078 7.078L16.25 16.25M19.078 5 16.25 7.828M4.922 19.078 7.75 16.25M4.922 5 7.75 7.828"
                           />
                         </svg>
-                        Start Tracking{" "}
+                        Start Tracking
                         <span className="absolute inset-0 bg-gradient-to-t group-hover:opacity-100 opacity-0 transition-all duration-300 from-white/10 via-white/5 to-white/[0.03]" />
                       </Link>
                     </div>

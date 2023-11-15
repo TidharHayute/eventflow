@@ -1,10 +1,8 @@
+import { LoaderCustom } from "@/components/Animation";
 import Header from "@/components/Header";
 import supabase from "@/utilities/supabaseClient";
-import {
-  ArrowLongRightIcon,
-  UserCircleIcon,
-} from "@heroicons/react/24/outline";
-import { Button, Separator } from "@radix-ui/themes";
+import { UserCircleIcon } from "@heroicons/react/24/outline";
+import { Button } from "@radix-ui/themes";
 import { createPagesServerClient } from "@supabase/auth-helpers-nextjs";
 import { GetServerSidePropsContext } from "next";
 import Head from "next/head";
@@ -17,21 +15,23 @@ export default function Register() {
   const [email, setEmail] = useState("");
   const [pass, setPass] = useState("");
 
-  const [load, setLoad] = useState(false);
+  const [loadCreate, setLoadCreate] = useState(false);
+  const [loadDemo, setLoadDemo] = useState(false);
 
   async function signUpWithEmail() {
-    setLoad(true);
+    setLoadCreate(true);
 
     try {
       if (email && pass) {
-        const { data, error } = await supabase.auth.signUp({
+        const { data } = await supabase.auth.signUp({
           email: email,
           password: pass,
         });
 
         if (data.user) {
         } else {
-          setLoad(false);
+          setLoadCreate(false);
+          toast.error("Error occurred. Please try again.");
         }
       } else {
       }
@@ -47,7 +47,7 @@ export default function Register() {
 
       <div className="absolute inset-0 bgTealGradient z-[-1]" />
 
-      <section className="fixHeight flex flex-col justify-center items-center">
+      <section className="fixHeight flex flex-col justify-center items-center max-md:hidden">
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -81,8 +81,6 @@ export default function Register() {
             onChange={(e) => setEmail(e.target.value)}
           />
 
-          {/*  */}
-
           <label className="field mt-5" htmlFor="password">
             Password
           </label>
@@ -103,7 +101,7 @@ export default function Register() {
             variant="classic"
             color="gray"
           >
-            Create Account
+            {loadCreate ? <LoaderCustom size={16} /> : "Create Account"}
           </Button>
         </form>
 
@@ -118,6 +116,7 @@ export default function Register() {
         <div className="grid grid-cols-2 gap-4 mt-7 w-md">
           <button
             onClick={async () => {
+              setLoadDemo(true);
               const { data, error } = await supabase.auth.signInWithPassword({
                 email: process.env.NEXT_PUBLIC_DEMO_USER!,
                 password: process.env.NEXT_PUBLIC_DEMO_PASS!,
@@ -125,14 +124,21 @@ export default function Register() {
 
               if (error) {
                 toast.error("Error occurred. Please try again.");
+                setLoadDemo(false);
               } else {
-                Router.push("/overview");
+                Router.push("/setup");
               }
             }}
             className="field relative group shadow-ins2"
           >
-            <UserCircleIcon className="w-4 scale-105" />
-            Demo Account
+            {loadDemo ? (
+              <LoaderCustom size={16} color="white" />
+            ) : (
+              <>
+                <UserCircleIcon className="w-4 scale-105" />
+                Demo Account
+              </>
+            )}
             <span className="absolute inset-0 bg-gradient-to-t opacity-0 transition-all duration-300 from-white/10 via-white/5 to-white/[0.02] group-hover:opacity-60" />
           </button>
 
@@ -150,25 +156,43 @@ export default function Register() {
           </button>
         </div>
       </section>
+
+      <section className="fixHeight flex flex-col justify-center items-center md:hidden p-5">
+        <p className="font-medium text-center">
+          Please access our site from a desktop or laptop computer.
+        </p>
+        <div className="flexc gap-2 mt-2 ">
+          <svg
+            className="w-5 fill-white -translate-y-[0.5px]"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path d="M12 2.247a10 10 0 0 0-3.162 19.487c.5.088.687-.212.687-.475 0-.237-.012-1.025-.012-1.862-2.513.462-3.163-.613-3.363-1.175a3.636 3.636 0 0 0-1.025-1.413c-.35-.187-.85-.65-.013-.662a2.001 2.001 0 0 1 1.538 1.025 2.137 2.137 0 0 0 2.912.825 2.104 2.104 0 0 1 .638-1.338c-2.225-.25-4.55-1.112-4.55-4.937a3.892 3.892 0 0 1 1.025-2.688 3.594 3.594 0 0 1 .1-2.65s.837-.262 2.75 1.025a9.427 9.427 0 0 1 5 0c1.912-1.3 2.75-1.025 2.75-1.025a3.593 3.593 0 0 1 .1 2.65 3.869 3.869 0 0 1 1.025 2.688c0 3.837-2.338 4.687-4.563 4.937a2.368 2.368 0 0 1 .675 1.85c0 1.338-.012 2.413-.012 2.75 0 .263.187.575.687.475A10.005 10.005 0 0 0 12 2.247Z" />
+          </svg>
+          <p className="hover-underline-animation">
+            GitHub Repository (Open Source)
+          </p>
+        </div>
+      </section>
     </main>
   );
 }
 
-// export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
-//   const supabase = createPagesServerClient(ctx);
-//   const {
-//     data: { session },
-//   } = await supabase.auth.getSession();
+export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
+  const supabase = createPagesServerClient(ctx);
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
 
-//   if (session)
-//     return {
-//       redirect: {
-//         destination: "/overview",
-//         permanent: false,
-//       },
-//     };
+  if (session)
+    return {
+      redirect: {
+        destination: "/overview",
+        permanent: false,
+      },
+    };
 
-//   return {
-//     props: {},
-//   };
-// };
+  return {
+    props: {},
+  };
+};

@@ -525,10 +525,14 @@ export default function LatestEvents({
                     </p>
 
                     <div className="flexc gap-2 justify-center mt-3">
-                      <button className="grayButton group xs">
+                      <Link
+                        passHref
+                        href={"/keys/?ref=API"}
+                        className="grayButton group xs"
+                      >
                         API Reference
                         <span className="group-hover:opacity-60" />
-                      </button>
+                      </Link>
                       <button
                         onClick={() => {
                           setSearchFilter("");

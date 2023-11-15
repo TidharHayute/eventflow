@@ -183,20 +183,7 @@ export default function Account({
                 </div>
 
                 <div className="pl-10 flex flex-col justify-end">
-                  <div className="flexc justify-between">
-                    <div>
-                      <p className="font-[450]">Delete Your Account</p>
-                      <p className="opacity-75 mt-0.5 text-sm">
-                        This action cannot be undone.
-                      </p>
-                    </div>
-
-                    <button className="px-5 py-[7px] text-[14px] rounded-m border text-white bg-red-500 border-red-400 transition-all duration-200 hover:opacity-75 active:scale-95">
-                      Delete Account
-                    </button>
-                  </div>
-
-                  <div className="flexc justify-end mt-5">
+                  <div className="flexc justify-end">
                     <button
                       onClick={async () => {
                         const { error } = await supabase.auth.signOut();
@@ -212,6 +199,18 @@ export default function Account({
                         strokeWidth={1.8}
                       />{" "}
                       <span className="absolute inset-0 bg-gradient-to-t opacity-0 transition-all duration-300 from-white/10 via-white/5 to-white/[0.02] group-hover:opacity-60" />
+                    </button>
+                  </div>
+                  <div className="flexc justify-between mt-5">
+                    <div>
+                      <p className="font-[450]">Delete Your Account</p>
+                      <p className="opacity-75 mt-0.5 text-sm">
+                        This action cannot be undone.
+                      </p>
+                    </div>
+
+                    <button className="px-5 py-[7px] text-[14px] rounded-m border text-white bg-red-500 border-red-400 transition-all duration-200 hover:opacity-75 active:scale-95">
+                      Delete Account
                     </button>
                   </div>
                 </div>

@@ -2,14 +2,10 @@ import { User } from "@supabase/auth-helpers-nextjs";
 
 import {
   ArrowLeftOnRectangleIcon,
-  ChatBubbleLeftRightIcon,
-  ChevronUpIcon,
   Cog8ToothIcon,
   CreditCardIcon,
   LifebuoyIcon,
-  MagnifyingGlassIcon,
   PlusIcon,
-  SparklesIcon,
   StarIcon,
   UserCircleIcon,
 } from "@heroicons/react/24/outline";
