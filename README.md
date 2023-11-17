@@ -2,7 +2,7 @@
 
 Eventflow is SaaS platform designed for enterprise businesses to track real-time events, monitor, and analyze platform usage and efficiency. [Live website](https://eventflow-io.vercel.app/login).
 
-<img width="300" alt="Logo" src="https://github.com/TidharHayute/eventflow/assets/46723284/51c6be73-e86f-4c53-94dc-c2ce3761ac82">
+<img width="280" alt="Logo" src="https://github.com/TidharHayute/eventflow/assets/46723284/51c6be73-e86f-4c53-94dc-c2ce3761ac82">
 
 ### Tech Stack
 
@@ -40,14 +40,15 @@ Eventflow is SaaS platform designed for enterprise businesses to track real-time
 
 #
 
-- <b>Addition</b>
+- <b>Addition:</b>
   - <b>Figma:</b> Wireframes, UI/UX
   - TypeScript
+  - Recharts
   - GitHub
 
 #
 
-- <b>Screenshots</b>
+- <b>Screenshots:</b>
 
   ![Overview](https://github.com/TidharHayute/eventflow/assets/46723284/b563c1f7-1157-43c4-8473-f331f9a27387)
   ![Categories](https://github.com/TidharHayute/eventflow/assets/46723284/b3e24f67-a913-4667-921a-3c7a6d23fb53)

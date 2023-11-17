@@ -52,7 +52,6 @@ function calculateEventsPerDay(events: Event[]) {
         eventCounts[eventDate]++;
       }
 
-      // Track event counts by name
       if (!topEvents[event.en]) {
         topEvents[event.en] = 1;
       } else {
@@ -72,7 +71,10 @@ function calculateEventsPerDay(events: Event[]) {
     value,
   }));
 
-  return { EventsChart, topEvents: topEventsArray };
+  return {
+    EventsChart,
+    topEvents: topEventsArray.sort((a, b) => b.value - a.value),
+  };
 }
 
 function formatDate(dateString: string) {

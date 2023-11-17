@@ -191,7 +191,7 @@ export default function Billing({
                     <p className="text-sm opacity-75">{billingData.plan}</p>
                     <div className="flexc justify-between mt-1">
                       <p className="text-lg font-medium">
-                        $10.9{" "}
+                        {billingData.plan == "Premium" ? `$10.9` : `$0`}
                         <span className="text-sm font-normal">/ month</span>
                       </p>
                       <p className="text-sm opacity-75">
