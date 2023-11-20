@@ -9,6 +9,8 @@ import { SessionContextProvider, Session } from "@supabase/auth-helpers-react";
 import { useState } from "react";
 import { Toaster } from "sonner";
 
+import { Analytics } from "@vercel/analytics/react";
+
 export default function App({
   Component,
   pageProps,
@@ -35,6 +37,8 @@ export default function App({
         />
         <Component {...pageProps} />
       </Theme>
+
+      <Analytics />
     </SessionContextProvider>
   );
 }
