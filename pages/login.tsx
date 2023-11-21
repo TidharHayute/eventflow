@@ -74,9 +74,25 @@ export default function Login() {
               CREATE AN ACCOUNT
             </Link>
             <div className="bg-gray-400 h-3.5 w-px" />
-            <a className="text-xs cursor-pointer font-[450] tracking-wider text-gray-400 transition-all hover:text-white">
-              FORGOT PASSWORD
-            </a>
+            <button
+              onClick={async () => {
+                setLoadDemo(true);
+                const { data, error } = await supabase.auth.signInWithPassword({
+                  email: process.env.NEXT_PUBLIC_DEMO_USER!,
+                  password: process.env.NEXT_PUBLIC_DEMO_PASS!,
+                });
+
+                if (error) {
+                  toast.error("Error occurred. Please try again.");
+                  setLoadDemo(false);
+                } else {
+                  Router.push("/setup");
+                }
+              }}
+              className="text-xs cursor-pointer font-[450] tracking-wider text-gray-400 transition-all hover:text-white"
+            >
+              DEMO ACCOUNT
+            </button>
           </div>
 
           <label className="field mt-9" htmlFor="email">
