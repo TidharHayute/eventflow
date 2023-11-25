@@ -1,12 +1,12 @@
 import { User, createPagesServerClient } from "@supabase/auth-helpers-nextjs";
 import { GetServerSidePropsContext } from "next";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Head from "next/head";
 import Sidebar from "@/components/Sidebar";
 import DashboardHeader from "@/components/DashboardHeader";
 import { connect } from "@planetscale/database";
-import { config } from "@/utilities/supabaseClient";
+import supabase, { config } from "@/utilities/supabaseClient";
 import { Category, Event } from "@/utilities/databaseTypes";
 import {
   ChartBarSquareIcon,
@@ -20,6 +20,7 @@ import { ColorNames } from "@/utilities/rechartColors";
 import { IconLibrary } from "@/utilities/iconsLibrary";
 import { Dialog } from "@radix-ui/themes";
 import { toast } from "sonner";
+import { useRouter } from "next/router";
 
 function calculateAverageEventsPerDay(events: Event[]): number {
   const currentDate = new Date();
@@ -135,6 +136,13 @@ export default function Overview({
       .sort((a, b) => b.ed.getTime() - a.ed.getTime())
   );
   const [expandList, setExpandList] = useState(eventsListData.length < 6);
+
+  const router = useRouter();
+  const [isDemoPresent, setIsDemoPresent] = useState(false);
+
+  useEffect(() => {
+    setIsDemoPresent(router.query.demo == "");
+  }, [router]);
 
   return (
     <main className="dashboardParent">
@@ -694,6 +702,53 @@ export default function Overview({
             </Dialog.Content>
           )}
         </Dialog.Root>
+
+        <Dialog.Root
+          onOpenChange={() => setIsDemoPresent(false)}
+          open={isDemoPresent}
+        >
+          <Dialog.Trigger></Dialog.Trigger>
+
+          <Dialog.Content
+            style={{
+              maxWidth: "430px",
+              background: "#151515",
+              borderRadius: "24px",
+            }}
+          >
+            <h4 className="">Demo Account</h4>
+            <p className="text-sm opacity-75 mt-1.5">
+              You are currently logged in to our demo account.
+              <br />
+              You can log out and create a new account.
+            </p>
+            <div className="flexc gap-3 justify-between mt-8">
+              <Dialog.Close>
+                <button
+                  onClick={async () => {
+                    const { error } = await supabase.auth.signOut();
+                    if (!error) {
+                      useRouter().push("/");
+                    }
+                  }}
+                  className={`grayButton md group outline-none`}
+                >
+                  Log Out
+                  <span className="group-hover:opacity-60" />
+                </button>
+              </Dialog.Close>
+
+              <Dialog.Close>
+                <button
+                  className={`grayButton md group outline-none bg-white text-black`}
+                >
+                  OK
+                  <span className="group-hover:opacity-60" />
+                </button>
+              </Dialog.Close>
+            </div>
+          </Dialog.Content>
+        </Dialog.Root>
       </div>
     </main>
   );
@@ -718,8 +773,12 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     `select * from categories where uid = '${session.user.id}' `
   );
 
+  // const eventsList = await conn.execute(
+  //   `SELECT * FROM events WHERE ed > DATE_SUB(NOW(), INTERVAL 7 DAY) and uid = '${session.user.id}' LIMIT 100`
+  // );
+
   const eventsList = await conn.execute(
-    `SELECT * FROM events WHERE ed > DATE_SUB(NOW(), INTERVAL 7 DAY) and uid = '${session.user.id}' LIMIT 100`
+    `SELECT * FROM events WHERE uid = '${session.user.id}' LIMIT 100`
   );
 
   const favCategories = await supabase

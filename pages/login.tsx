@@ -89,7 +89,7 @@ export default function Login() {
                   Router.push("/setup");
                 }
               }}
-              className="text-xs cursor-pointer font-[450] tracking-wider text-gray-400 transition-all hover:text-white"
+              className="text-xs cursor-pointer font-[450] tracking-wider text-gray-300 transition-all hover:text-white"
             >
               DEMO ACCOUNT
             </button>
